@@ -39,7 +39,7 @@ This will get the packages and build the frontend. The front-end will be stored 
 ### Frontend
 
 ```
-#web/nostr-reader/.env.local
+#.env.local
 VITE_API_LINK=http://localhost:8080 // change this port to the same port as in config.json under server : {port: 8080}
 VITE_APP_TRANSLATE_URL=http://translate.local/translate // leave this empty if you do not want to use libretranslate service
 VITE_APP_MODE=dev  // set to prod for production
