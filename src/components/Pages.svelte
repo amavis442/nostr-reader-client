@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte'
+	import { onDestroy, onMount } from 'svelte'
 	import Pagination from './partials/Pagination.svelte'
 	import Feeder from './Feeder.svelte'
 	import TextNote from './TextNote.svelte'
@@ -28,6 +28,8 @@
 	export let renewData: boolean = false
 	export let context: string | null = null
 
+	let intervalId: any
+
 	onMount(async () => {
 		setApiUrl(apiUrl)
 
@@ -47,12 +49,16 @@
 		})
 
 		getNewNotesCounter()
-		setInterval(getNewNotesCounter, 60 * 1000)
+		intervalId = setInterval(getNewNotesCounter, 60 * 1000)
 		let elm: null | HTMLElement = document.getElementById('realNotesContainer')
 		if (elm) {
 			elm.scrollTo(0, 0)
 		}
 	})
+
+	onDestroy(() => {
+		clearInterval(intervalId)
+	}) 
 
 	function createReplyTextNote(replyToNote: Note) {
 		openModal(CreateNoteModal, {

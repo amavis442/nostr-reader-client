@@ -22,7 +22,7 @@ export function addBookmark(eventID: string) {
           since: paginatorData.since,
           renew: false,
           maxid: paginatorData.maxid,
-          context: 'bookmark'
+          context: 'follow'
         });
         return data;
       })

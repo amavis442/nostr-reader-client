@@ -154,7 +154,7 @@
 								<div class="text-left order-first w-6/12">
 									<strong class="text-black text-sm font-medium">
 										<span title={note.event.pubkey}>{normalizeName(note.profile)}</span>
-										{#if followed}
+										{#if bookmarked}
 											<i class="fa-solid fa-bookmark" />
 										{/if}
 										<small class="text-gray"
