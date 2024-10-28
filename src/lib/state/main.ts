@@ -6,17 +6,22 @@ export const pageData = writable([])
 let apiUrl: string
 
 export const paginator = writable<Paginator>({
-	current_page: 1,
-	from: 1,
-	to: 1,
-	per_page: 1,
-	last_page: 1,
+	cursor: 0,
+	previous_cursor: 0,
+	next_cursor: 0,
+	per_page: 30,
 	total: 0,
-	limit: 60,
-	since: 1, // 1 day
-	renew: true,
-	maxid: 0,
-	context: null
+	start_id: 0,
+	end_id: 0,
+	since: 0,
+	context: "",
+})
+
+export const persistentPerPagePaginator = writable({
+	cursor: 1,
+	per_page: 30,
+	total: 0,
+	max_id: 0,
 })
 
 export function setApiUrl(url: string) {
@@ -25,10 +30,11 @@ export function setApiUrl(url: string) {
 
 const elm: null | HTMLElement = document.getElementById('content')
 
-export async function refreshView(params: Page) {
-	return await fetch(apiUrl, {
-		method: 'POST',
-		body: JSON.stringify(params),
+export async function refreshView(page: Page) {
+	let params = new URLSearchParams(page).toString()
+	
+	return await fetch(apiUrl + "?" + params, {
+		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json'
 		}
@@ -39,27 +45,25 @@ export async function refreshView(params: Page) {
 		.then((response) => {
 			console.log('Json is ', response)
 
-			let maxId = 0
-			maxId = params.maxid
+			let end_id = 0
+			end_id = page.end_id
 
-			if (params.renew || params.maxid == 0) {
-				maxId = response.maxid
+			if (page.renew || page.end_id == 0) {
+				end_id = response.end_id
 			}
 
 			paginator.set({
-				current_page: response.current_page,
-				from: response.from,
-				to: response.to,
-				per_page: response.per_page,
-				last_page: response.last_page > 10 ? 10 : response.last_page,
-				total: response.total,
-				limit: response.limit,
-				since: response.since,
-				renew: response.renew,
-				maxid: maxId,
-				context: null
+				cursor: response.data.paging.cursor,
+				previous_cursor: response.data.paging.previous_cursor,
+				next_cursor: response.data.paging.next_cursor,
+				start_id: response.data.paging.start_id,
+				end_id: end_id,
+				per_page: response.data.paging.per_page,
+				total: response.data.paging.total,
+				since: response.data.paging.since,
+				context: page.context
 			})
-			pageData.set(response.data)
+			pageData.set(response.data.events)
 		})
 		.then(() => {
 			//const elm: null|HTMLElement = document.getElementById("content")
@@ -81,12 +85,15 @@ export async function refresh() {
 			console.log('Json is ', response)
 			const paginatorData = get(paginator)
 			refreshView({
-				page: paginatorData.current_page,
-				limit: paginatorData.limit,
+				cursor: paginatorData.cursor,
+				prev_cursor: paginatorData.previous_cursor,
+				next_cursor: paginatorData.next_cursor,
+				start_id: paginatorData.start_id,
+				per_page: paginatorData.per_page,
 				since: paginatorData.since,
 				renew: true,
-				maxid: 0,
-				context: "page.sync"
+				end_id: 0,
+				context: paginatorData.context
 			})
 			return response
 		})
@@ -115,12 +122,15 @@ export function blockUser(pubkey: string) {
 		.then((response) => {
 			const paginatorData = get(paginator)
 			refreshView({
-				page: paginatorData.current_page,
-				limit: paginatorData.limit,
+				cursor: paginatorData.cursor,
+				prev_cursor: 0,
+				next_cursor: 0,
+				per_page: paginatorData.per_page,
 				since: paginatorData.since,
 				renew: false,
-				maxid: paginatorData.maxid,
-				context: null
+				start_id: paginatorData.start_id,
+				end_id: paginatorData.end_id,
+				context: paginatorData.context
 			})
 			return response
 		})
@@ -143,12 +153,15 @@ export function followUser(pubkey: string) {
 		.then((response) => {
 			const paginatorData = get(paginator)
 			refreshView({
-				page: paginatorData.current_page,
-				limit: paginatorData.limit,
+				cursor: paginatorData.cursor,
+				prev_cursor: 0,
+				next_cursor: 0,
+				per_page: paginatorData.per_page,
 				since: paginatorData.since,
 				renew: false,
-				maxid: paginatorData.maxid,
-				context: null
+				start_id: paginatorData.start_id,
+				end_id: paginatorData.end_id,
+				context:  paginatorData.context
 			})
 			return response
 		})
@@ -171,12 +184,15 @@ export function unfollowUser(pubkey: string) {
 		.then((response) => {
 			const paginatorData = get(paginator)
 			refreshView({
-				page: paginatorData.current_page,
-				limit: paginatorData.limit,
+				cursor: paginatorData.cursor,
+				prev_cursor: 0,
+				next_cursor: 0,
+				per_page: paginatorData.per_page,
 				since: paginatorData.since,
 				renew: false,
-				maxid: paginatorData.maxid,
-				context: null
+				start_id: paginatorData.start_id,
+				end_id: paginatorData.end_id,
+				context: paginatorData.context
 			})
 			return response
 		})
@@ -187,16 +203,20 @@ export function unfollowUser(pubkey: string) {
 
 export async function getNewNotesCount(context: string | null): Promise<number> {
 	const paginatorData = get(paginator)
-	const data = await fetch(`${import.meta.env.VITE_API_LINK}/api/getnewnotescount`, {
-		method: 'POST',
-		body: JSON.stringify({
-			page: paginatorData.current_page,
-			limit: paginatorData.limit,
-			since: paginatorData.since,
-			renew: false,
-			maxid: paginatorData.maxid,
-			context: context
-		}),
+	const params = {
+		cursor: paginatorData.cursor ?? 0,
+		prev_cursor: 0,
+		next_cursor: 0,
+		per_page: paginatorData.per_page,
+		since: paginatorData.since,
+		renew: false,
+		start_id: paginatorData.start_id,
+		end_id: paginatorData.end_id,
+		context: context ?? "follow"
+		}
+
+	const data = await fetch(`${import.meta.env.VITE_API_LINK}/api/getnewnotescount?` + new URLSearchParams(params).toString(), {
+		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json'
 		}
@@ -205,6 +225,7 @@ export async function getNewNotesCount(context: string | null): Promise<number> 
 			return res.json()
 		})
 		.then((response) => {
+			console.log(response)
 			return response.data
 		})
 		.catch((err) => {
@@ -216,7 +237,7 @@ export async function getNewNotesCount(context: string | null): Promise<number> 
 
 export async function getLastSeenId(): Promise<number> {
 	const data = await fetch(`${import.meta.env.VITE_API_LINK}/api/getlastseenid`, {
-		method: 'POST',
+		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json'
 		}
@@ -234,7 +255,7 @@ export async function getLastSeenId(): Promise<number> {
 	return typeof data === 'object' ? 0 : Number(data)
 }
 
-//Todo: needs same fix as sunc note so only a portion of the view is updated and not the complete view.
+//Todo: needs same fix as sync note so only a portion of the view is updated and not the complete view.
 export async function publish(msg: string, note: Note | null) {
 	await fetch(`${import.meta.env.VITE_API_LINK}/api/publish`, {
 		method: 'POST',
@@ -251,24 +272,30 @@ export async function publish(msg: string, note: Note | null) {
 			const paginatorData = get(paginator)
 			if (response.status == 'ok' && note == null) {
 				refreshView({
-					page: paginatorData.current_page,
-					limit: paginatorData.limit,
+					cursor: paginatorData.cursor,
+					prev_cursor: 0,
+					next_cursor: 0,
+					per_page: paginatorData.per_page,
 					since: paginatorData.since,
 					renew: true,
-					maxid: paginatorData.maxid,
-					context: null
+					start_id: paginatorData.start_id,
+					end_id: paginatorData.end_id,
+					context: paginatorData.context
 				})
 			}
 
 			if (response.status == 'ok' && note != null) {
 				console.debug('Refresh after publish: ', note.event.id)
 				refreshView({
-					page: paginatorData.current_page,
-					limit: paginatorData.limit,
+					cursor: paginatorData.cursor,
+					prev_cursor: 0,
+					next_cursor: 0,
+					per_page: paginatorData.per_page,
 					since: paginatorData.since,
 					renew: false,
-					maxid: paginatorData.maxid,
-					context: null
+					start_id: paginatorData.start_id,
+					end_id: paginatorData.end_id,
+					context: paginatorData.context
 				})
 			}
 			return response
@@ -289,11 +316,14 @@ export async function syncNote() {
 	//JSON.stringify(ids)
 
 	await refreshView({
-		page: paginatorData.current_page,
-		limit: paginatorData.limit,
+		cursor: paginatorData.cursor,
+		prev_cursor: 0,
+		next_cursor: 0,
+		per_page: paginatorData.per_page,
 		since: paginatorData.since,
 		renew: false,
-		maxid: paginatorData.maxid,
+		start_id: paginatorData.start_id,
+		end_id: paginatorData.end_id,
 		context: "page.refresh",
 		ids: ids,
 		total: paginatorData.total

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onDestroy, onMount } from 'svelte'
+	import { createEventDispatcher, onDestroy, onMount } from 'svelte'
 	import Pagination from './partials/Pagination.svelte'
 	import Feeder from './Feeder.svelte'
 	import TextNote from './TextNote.svelte'
@@ -35,19 +35,22 @@
 
 		pageData.set([])
 
-		if ($paginator.maxid < 1) {
-			$paginator.maxid = await getLastSeenId()
+		if ($paginator.end_id < 1) {
+			$paginator.end_id = await getLastSeenId()
 		}
+		$paginator.context = context
 
 		await refreshView({
-			page: 1,
-			limit: $paginator.limit,
+			cursor: 0,
+			next_cursor: 0,
+			prev_cursor: 0,
+			per_page: $paginator.per_page,
 			since: $paginator.since,
 			renew: renewData,
-			maxid: $paginator.maxid,
+			start_id: $paginator.start_id,
+			end_id: $paginator.end_id,
 			context: context
 		})
-
 		getNewNotesCounter()
 		intervalId = setInterval(getNewNotesCounter, 60 * 1000)
 		let elm: null | HTMLElement = document.getElementById('realNotesContainer')
@@ -58,7 +61,7 @@
 
 	onDestroy(() => {
 		clearInterval(intervalId)
-	}) 
+	})
 
 	function createReplyTextNote(replyToNote: Note) {
 		openModal(CreateNoteModal, {
@@ -103,73 +106,23 @@
 	<Feeder>
 		<slot>
 			<div class="flex flex-col bg-white p-2 rounded-lg m-2">
-				<button
-					on:click={async () => {
-						await refreshView({
-							page: 1,
-							limit: $paginator.limit,
-							since: $paginator.since,
-							renew: true,
-							maxid: $paginator.maxid,
-							context: null
-						})
-						await getNewNotesCounter()
-					}}
-					class="btn btn-blue"
-					><i class="fa-solid fa-arrows-rotate"></i> Sync ({newNotesCount} waiting notes)</button
-				>
-				<select
-					id="limit"
-					bind:value={$paginator.limit}
-					on:change={() => {
-						refreshView({
-							page: $paginator.current_page,
-							limit: $paginator.limit,
-							since: $paginator.since,
-							renew: false,
-							maxid: $paginator.maxid,
-							context: null
-						})
-					}}
-					class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-				>
-					{#each [10, 15, 20, 25, 30, 60, 90, 120, 150, 180] as limitValue}
-						<option value={limitValue}>
-							{limitValue}
-						</option>
-					{/each}
-				</select><label for="limit">Items Per Page</label>
-
-				<select
-					id="since"
-					bind:value={$paginator.since}
-					on:change={() =>
-						refreshView({
-							page: $paginator.current_page,
-							limit: $paginator.limit,
-							since: $paginator.since,
-							renew: false,
-							maxid: $paginator.maxid,
-							context: null
-						})}
-					class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-				>
-					{#each [1, 2, 3, 4, 5, 6, 7] as sinceValue}
-						<option value={sinceValue}>
-							{sinceValue}
-						</option>
-					{/each}
-				</select> <label for="since"> Days (since)</label>
-				{#if $paginator.total > $paginator.per_page}
+				<div class="w-full text-center">
+				({newNotesCount} waiting notes)
+				</div>
+			
+				{#if $paginator.previous_cursor > 0 || $paginator.next_cursor > 0}
 					<Pagination
 						on:change={async (ev) => {
 							await refreshView({
-								page: ev.detail,
-								limit: $paginator.limit,
+								cursor: ev.detail.cursor,
+								next_cursor: ev.detail.next_cursor,
+								prev_cursor: ev.detail.prev_cursor,
+								per_page: $paginator.per_page,
 								since: $paginator.since,
 								renew: false,
-								maxid: $paginator.maxid,
-								context: null
+								start_id: $paginator.start_id,
+								end_id: $paginator.end_id,
+								context: context
 							})
 						}}
 					></Pagination>

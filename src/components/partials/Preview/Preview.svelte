@@ -36,7 +36,7 @@
 
 {#if preview}
     <div
-      class="rounded-2xl border border-solid border-medium bg-white overflow-hidden"
+      class="rounded-2xl max-w-96 border border-solid border-medium bg-white overflow-hidden"
     >
       <Link href={url}>
         {#if preview.images}

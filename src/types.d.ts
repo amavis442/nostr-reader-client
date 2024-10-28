@@ -1,8 +1,11 @@
 export type Page = {
-	page: number
-	limit: number
+	cursor: number
+	next_cursor: number
+	prev_cursor: number
+	start_id: number
+	end_id: number
+	per_page: number
 	since: number
-	maxid: number
 	renew: boolean
 	context?: string | null
 	ids?: array|null
@@ -19,17 +22,15 @@ export interface IRefreshView {
 }
 
 export interface Paginator {
-	current_page: number
-	from: number
-	to: number
+	cursor: number
+	previous_cursor: number
+	next_cursor: number
 	per_page: number
-	last_page: number
 	total: number
-	limit: number
+	start_id: number
+	end_id: number
 	since: number
-	renew: boolean
-	maxid: number
-	context: null | string
+	context: string
 }
 
 export type Profile = {

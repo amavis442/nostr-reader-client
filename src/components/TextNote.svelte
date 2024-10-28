@@ -72,9 +72,14 @@
 	}
 
 	function normalizeName(profile: Profile): string {
+		if (profile == undefined) {
+			console.debug("No profile available")
+			return note.event.pubkey
+		}
+		console.debug(profile)
 		return (profile ? (profile.name ? profile.name : note.event.pubkey) : note.event.pubkey).slice(
 			0,
-			profile && profile.name.length < 50 ? profile.name.length : 20
+			profile.name != undefined && profile.name.length < 50 ? profile.name.length : 20
 		)
 	}
 
@@ -150,8 +155,8 @@
 
 					<div class="flex flex-col w-full">
 						<div class="px-2">
-							<div class="flex gap-2 h-14 w-full py-2 border-b border-gray-400">
-								<div class="text-left order-first w-6/12">
+							<div class="flex w-full border-b border-gray-400">
+								<div class="text-left order-first w-full">
 									<strong class="text-black text-sm font-medium">
 										<span title={note.event.pubkey}>{normalizeName(note.profile)}</span>
 										{#if bookmarked}
@@ -163,61 +168,7 @@
 									</strong>
 								</div>
 
-								<div class="text-right order-last md:w-6/12">
-									<div class="text-right">
-										<div class="flex content-normal justify-end">
-											<div>
-												{#if followed}
-													<button on:click={unfollowUser(note.event.pubkey)} title="unfollow"
-														><Icon src={FaSolidUserMinus} size="24" color="white" /></button
-													>
-												{:else}
-													<button on:click={followUser(note.event.pubkey)} title="follow"
-														><Icon src={FaSolidUserPlus} size="24" color="white" /></button
-													>
-												{/if}
-											</div>
-
-											<div>
-												{#if bookmarked}
-													<button on:click={removeBookmark(note.event.id)} title="remove bookmark"
-														><Icon src={FaSolidBookmark} size="24" color="white" /></button
-													>
-												{:else}
-													<button on:click={addBookmark(note.event.id)} title="add bookmark"
-														><Icon src={FaBookmark} size="24" color="white" /></button
-													>
-												{/if}
-											</div>
-
-											<div>
-												<button on:click={reply(note)} title="reply"
-													><Icon src={FaCommentDots} size="24" color="white" /></button
-												>
-											</div>
-											<div>
-												<button on:click={info(note)} title="info"
-													><Icon src={FaSolidInfoCircle} size="24" color="white" /></button
-												>
-											</div>
-											<div>
-												<button on:click={syncnote(note)} title="sync note"
-													><Icon src={FaSolidSync} size="24" color="white" /></button
-												>
-											</div>
-											<div>
-												<button on:click={blockUser(note.event.pubkey)} title="block"
-													><Icon src={FaSolidBan} size="24" color="white" /></button
-												>
-											</div>
-											<div>
-												<button on:click={gotoTopOfPage(note)} title="block"
-													><Icon src={FaSolidLongArrowAltUp} size="24" color="white" /></button
-												>
-											</div>
-										</div>
-									</div>
-								</div>
+								
 							</div>
 						</div>
 
@@ -231,7 +182,7 @@
 							<p class="mt-4 flex space-x-8 w-full p-1">
 								<span>
 									{#if note.children && Object.keys(note.children).length > 0}
-										<button type="button" on:click={toggleReplies} class="">
+										<button type="button" on:click={toggleReplies}>
 											{#if repliesExpanded}
 												<Icon src={FaFolderOpen} size="24" className="inline" />
 											{:else}
@@ -242,6 +193,61 @@
 									{/if}
 								</span>
 							</p>
+						</div>
+						<div class="text-right order-last md:w-full border-t border-gray-400 p-2">
+							<div class="text-right">
+								<div class="flex content-normal justify-center gap-4">
+									<div>
+										{#if followed}
+											<button on:click={unfollowUser(note.event.pubkey)} title="unfollow"
+												><Icon src={FaSolidUserMinus} size="24" color="white" /></button
+											>
+										{:else}
+											<button on:click={followUser(note.event.pubkey)} title="follow"
+												><Icon src={FaSolidUserPlus} size="24" color="white" /></button
+											>
+										{/if}
+									</div>
+
+									<div>
+										{#if bookmarked}
+											<button on:click={removeBookmark(note.event.id)} title="remove bookmark"
+												><Icon src={FaSolidBookmark} size="24" color="white" /></button
+											>
+										{:else}
+											<button on:click={addBookmark(note.event.id)} title="add bookmark"
+												><Icon src={FaBookmark} size="24" color="white" /></button
+											>
+										{/if}
+									</div>
+
+									<div>
+										<button on:click={reply(note)} title="reply"
+											><Icon src={FaCommentDots} size="24" color="white" /></button
+										>
+									</div>
+									<div>
+										<button on:click={info(note)} title="info"
+											><Icon src={FaSolidInfoCircle} size="24" color="white" /></button
+										>
+									</div>
+									<div>
+										<button on:click={syncnote(note)} title="sync note"
+											><Icon src={FaSolidSync} size="24" color="white" /></button
+										>
+									</div>
+									<div>
+										<button on:click={blockUser(note.event.pubkey)} title="block"
+											><Icon src={FaSolidBan} size="24" color="white" /></button
+										>
+									</div>
+									<div>
+										<button on:click={gotoTopOfPage(note)} title="block"
+											><Icon src={FaSolidLongArrowAltUp} size="24" color="white" /></button
+										>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -303,7 +309,7 @@
 	}
 
 	button {
-		@apply p-1 bg-blue-600 hover:bg-blue-700 rounded ml-1 mr-1 text-white;
+		@apply p-2 text-gray-800 border-2 border-gray-400 bg-slate-400 rounded ml-1 mr-1;
 	}
 
 	include-color-blue-100 {

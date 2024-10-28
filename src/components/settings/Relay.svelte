@@ -104,7 +104,7 @@
 
 	onMount(async () => {
 		fetch(`${import.meta.env.VITE_API_LINK}/api/getrelays`, {
-			method: 'POST',
+			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json'
 			}
