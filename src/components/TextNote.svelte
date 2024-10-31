@@ -58,6 +58,11 @@
 	function info(note: Note) {
 		dispatch('info', note)
 	}
+	
+	function showProfile(note: Note) {
+		dispatch('show_profile', note.profile)
+	}
+
 	function syncnote(note: Note) {
 		dispatch('syncNote', note)
 	}
@@ -144,10 +149,11 @@
 						class="w-16 mr-2 max-w-min min-w-fit"
 						tabindex="0"
 						role="button"
+						on:click={showProfile(note)}
 					>
 						<img
 							class="w-14 h-14 rounded-full {followed ? 'border-2 border-green-800' : ''}"
-							src={note.profile.picture != '' ? note.profile.picture : placeholder}
+							src={note.profile.picture != '' && note.profile.picture != undefined ? note.profile.picture : placeholder}
 							title={note.profile.about ? note.profile.about : ''}
 							alt={note.event.pubkey.slice(0, 10)}
 						/>

@@ -145,6 +145,9 @@
 						on:info={(ev) => {
 							createInfoModal(ev.detail)
 						}}
+						on:show_profile={(ev) => {
+							createProfileInfoModal(ev.detail)
+						}}
 						on:topPage={(ev) => topOfPage(ev)}
 						on:profileInfo={(ev) => createProfileInfoModal(ev.detail.profile)}
 						on:noteInfo={(ev) => createNoteInfoModal(ev.detail.note)}

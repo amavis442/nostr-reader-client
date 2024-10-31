@@ -10,9 +10,6 @@ export const paginator = writable<Paginator>({
 	previous_cursor: 0,
 	next_cursor: 0,
 	per_page: 30,
-	total: 0,
-	start_id: 0,
-	end_id: 0,
 	since: 0,
 	context: "",
 })
@@ -44,26 +41,17 @@ export async function refreshView(page: Page) {
 		})
 		.then((response) => {
 			console.log('Json is ', response)
-
-			let end_id = 0
-			end_id = page.end_id
-
-			if (page.renew || page.end_id == 0) {
-				end_id = response.end_id
-			}
-
+			let paging = response.data.paging
 			paginator.set({
-				cursor: response.data.paging.cursor,
-				previous_cursor: response.data.paging.previous_cursor,
-				next_cursor: response.data.paging.next_cursor,
-				start_id: response.data.paging.start_id,
-				end_id: end_id,
-				per_page: response.data.paging.per_page,
-				total: response.data.paging.total,
-				since: response.data.paging.since,
+				cursor: paging.cursor,
+				previous_cursor: paging.previous_cursor,
+				next_cursor: paging.next_cursor,
+				per_page: paging.per_page,
+				since: paging.since,
 				context: page.context
 			})
 			pageData.set(response.data.events)
+			console.debug(paginator)
 		})
 		.then(() => {
 			//const elm: null|HTMLElement = document.getElementById("content")
@@ -88,11 +76,9 @@ export async function refresh() {
 				cursor: paginatorData.cursor,
 				prev_cursor: paginatorData.previous_cursor,
 				next_cursor: paginatorData.next_cursor,
-				start_id: paginatorData.start_id,
 				per_page: paginatorData.per_page,
 				since: paginatorData.since,
 				renew: true,
-				end_id: 0,
 				context: paginatorData.context
 			})
 			return response
@@ -128,8 +114,6 @@ export function blockUser(pubkey: string) {
 				per_page: paginatorData.per_page,
 				since: paginatorData.since,
 				renew: false,
-				start_id: paginatorData.start_id,
-				end_id: paginatorData.end_id,
 				context: paginatorData.context
 			})
 			return response
@@ -159,8 +143,6 @@ export function followUser(pubkey: string) {
 				per_page: paginatorData.per_page,
 				since: paginatorData.since,
 				renew: false,
-				start_id: paginatorData.start_id,
-				end_id: paginatorData.end_id,
 				context:  paginatorData.context
 			})
 			return response
@@ -190,8 +172,6 @@ export function unfollowUser(pubkey: string) {
 				per_page: paginatorData.per_page,
 				since: paginatorData.since,
 				renew: false,
-				start_id: paginatorData.start_id,
-				end_id: paginatorData.end_id,
 				context: paginatorData.context
 			})
 			return response
@@ -210,8 +190,6 @@ export async function getNewNotesCount(context: string | null): Promise<number> 
 		per_page: paginatorData.per_page,
 		since: paginatorData.since,
 		renew: false,
-		start_id: paginatorData.start_id,
-		end_id: paginatorData.end_id,
 		context: context ?? "follow"
 		}
 
@@ -278,8 +256,6 @@ export async function publish(msg: string, note: Note | null) {
 					per_page: paginatorData.per_page,
 					since: paginatorData.since,
 					renew: true,
-					start_id: paginatorData.start_id,
-					end_id: paginatorData.end_id,
 					context: paginatorData.context
 				})
 			}
@@ -293,8 +269,6 @@ export async function publish(msg: string, note: Note | null) {
 					per_page: paginatorData.per_page,
 					since: paginatorData.since,
 					renew: false,
-					start_id: paginatorData.start_id,
-					end_id: paginatorData.end_id,
 					context: paginatorData.context
 				})
 			}
@@ -322,11 +296,7 @@ export async function syncNote() {
 		per_page: paginatorData.per_page,
 		since: paginatorData.since,
 		renew: false,
-		start_id: paginatorData.start_id,
-		end_id: paginatorData.end_id,
-		context: "page.refresh",
-		ids: ids,
-		total: paginatorData.total
+		context: "refresh",
 	})
 }
 

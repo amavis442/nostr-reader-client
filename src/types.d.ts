@@ -2,14 +2,10 @@ export type Page = {
 	cursor: number
 	next_cursor: number
 	prev_cursor: number
-	start_id: number
-	end_id: number
 	per_page: number
 	since: number
 	renew: boolean
 	context?: string | null
-	ids?: array|null
-	total?: number|null
 }
 
 export interface IRefreshView {
@@ -26,9 +22,6 @@ export interface Paginator {
 	previous_cursor: number
 	next_cursor: number
 	per_page: number
-	total: number
-	start_id: number
-	end_id: number
 	since: number
 	context: string
 }
@@ -39,7 +32,7 @@ export type Profile = {
 	about: string
 	picture: string
 	website: string
-	pip05: string
+	nip05: string
 	lud16: string
 	display_name: string
 	followed: boolean
