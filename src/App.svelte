@@ -11,6 +11,7 @@
   import "@fortawesome/fontawesome-free/css/solid.css";
   import Toasts from "./components/partials/Toast/Toasts.svelte";
   import { Modals, closeModal } from "svelte-modals";
+	import Notifications from "./components/Notifications.svelte"
   export let url = "";
 
 </script>
@@ -41,6 +42,11 @@
             <span class="{active ? 'selected' : ''}">Own Replies</span>
             </Link>
         </p>
+        <p class="nav-p {url === '/notifications' ? 'selected' : ''}">
+          <Link to="/notifications" title="Replies on your reply" let:active>
+            <span class="{active ? 'selected' : ''}">Notifications</span>
+            </Link>
+        </p>
         <p class="nav-p {url === '/bookmark' ? 'selected' : ''}">
           <Link to="/bookmark" title="Bookmarked" let:active>
             <span class="{active ? 'selected' : ''}">Bookmarked</span>
@@ -68,6 +74,7 @@
       <Route path="/" component="{Followed}" />
       <Route path="global" component="{Feed}" />
       <Route path="inbox" component="{Inbox}" />
+      <Route path="notifications" component="{Notifications}" />
       <Route path="bookmark" component="{Bookmark}" />
       <Route path="account" component="{Account}" />
       <Route path="relay" component="{Relay}" />

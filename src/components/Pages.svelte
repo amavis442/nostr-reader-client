@@ -7,6 +7,8 @@
 	import InfoModal from './partials/Modal/InfoModal.svelte'
 	import ProfileInfoModal from './partials/Modal/ProfileInfoModal.svelte'
 	import NoteInfoModal from './partials/Modal/NoteInfoModal.svelte'
+	import Icon from 'svelte-icons-pack/Icon.svelte'
+	import FaSolidSync from 'svelte-icons-pack/fa/FaSolidSync'
 	import { openModal } from 'svelte-modals'
 	import {
 		refreshView,
@@ -17,9 +19,8 @@
 		pageData,
 		setApiUrl,
 		paginator,
-		syncNote,
-		getNewNotesCount,
-		getLastSeenId
+		syncPage,
+		getNewNotesCount
 	} from '../lib/state/main'
 	import { addBookmark, removeBookmark } from '../lib/state/bookmark'
 	import type { Note, Profile, NostrEvent } from '../types'
@@ -35,9 +36,6 @@
 
 		pageData.set([])
 
-		if ($paginator.end_id < 1) {
-			$paginator.end_id = await getLastSeenId()
-		}
 		$paginator.context = context
 
 		await refreshView({
@@ -47,8 +45,6 @@
 			per_page: $paginator.per_page,
 			since: $paginator.since,
 			renew: renewData,
-			start_id: $paginator.start_id,
-			end_id: $paginator.end_id,
 			context: context
 		})
 		getNewNotesCounter()
@@ -120,13 +116,17 @@
 								per_page: $paginator.per_page,
 								since: $paginator.since,
 								renew: false,
-								start_id: $paginator.start_id,
-								end_id: $paginator.end_id,
 								context: context
 							})
 						}}
 					></Pagination>
 				{/if}
+
+				<div class="flex w-full justify-center mt-4 mb-4">
+					<button on:click={()=> syncPage()} title="sync page" class="p-2 text-gray-800 border-2 border-gray-400 bg-slate-400 rounded ml-1 mr-1"
+						><Icon src={FaSolidSync} size="24" color="white" /></button
+					>
+				</div>
 			</div>
 
 			<ul class="items-center w-full border-hidden" id="content">
@@ -138,7 +138,6 @@
 						on:addBookmark={(ev) => addBookmark(ev.detail)}
 						on:removeBookmark={(ev) => removeBookmark(ev.detail)}
 						on:blockUser={(ev) => blockUser(ev.detail)}
-						on:syncNote={(ev) => syncNote()}
 						on:reply={(ev) => {
 							createReplyTextNote(ev.detail)
 						}}

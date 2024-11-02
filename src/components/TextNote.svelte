@@ -237,11 +237,7 @@
 											><Icon src={FaSolidInfoCircle} size="24" color="white" /></button
 										>
 									</div>
-									<div>
-										<button on:click={syncnote(note)} title="sync note"
-											><Icon src={FaSolidSync} size="24" color="white" /></button
-										>
-									</div>
+									
 									<div>
 										<button on:click={blockUser(note.event.pubkey)} title="block"
 											><Icon src={FaSolidBan} size="24" color="white" /></button

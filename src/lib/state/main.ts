@@ -279,7 +279,7 @@ export async function publish(msg: string, note: Note | null) {
 		})
 }
 
-export async function syncNote() {
+export async function syncPage() {
 	const paginatorData = get(paginator)
 	const currentPageData = get(pageData)
 	let ids: Array<string> = [];
