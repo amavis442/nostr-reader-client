@@ -3,24 +3,25 @@
 
 	import { createEventDispatcher } from 'svelte'
 	import NoteContent from './partials/NoteContent.svelte'
-
 	import placeholder from '../assets/profile-picture.jpg'
-	import Icon from 'svelte-icons-pack/Icon.svelte'
-	import FaSolidInfoCircle from 'svelte-icons-pack/fa/FaSolidInfoCircle'
-	import FaSolidUserMinus from 'svelte-icons-pack/fa/FaSolidUserMinus'
-	import FaSolidUserPlus from 'svelte-icons-pack/fa/FaSolidUserPlus'
-
-	import FaBookmark from 'svelte-icons-pack/fa/FaBookmark'
-	import FaSolidBookmark from 'svelte-icons-pack/fa/FaSolidBookmark'
-
-	import FaFolder from 'svelte-icons-pack/fa/FaFolder'
-	import FaFolderOpen from 'svelte-icons-pack/fa/FaFolderOpen'
-
-	import FaSolidBan from 'svelte-icons-pack/fa/FaSolidBan'
-	import FaCommentDots from 'svelte-icons-pack/fa/FaCommentDots'
-	import FaSolidSync from 'svelte-icons-pack/fa/FaSolidSync'
-	import FaSolidLongArrowAltUp from 'svelte-icons-pack/fa/FaSolidLongArrowAltUp'
+	import { Icon } from 'svelte-icons-pack'
+	import { FaSolidCircleInfo } from 'svelte-icons-pack/fa'
+	import { FaSolidUserMinus } from 'svelte-icons-pack/fa'
+	import { FaSolidUserPlus } from 'svelte-icons-pack/fa'
+	import { FaBookmark } from 'svelte-icons-pack/fa'
+	import { FaSolidBookmark } from 'svelte-icons-pack/fa'
+	import { FaFolder } from 'svelte-icons-pack/fa'
+	import { FaFolderOpen } from 'svelte-icons-pack/fa'
+	import { FaSolidBan } from 'svelte-icons-pack/fa'
+	import { FaCommentDots } from 'svelte-icons-pack/fa'
+	import { FaSolidArrowsRotate } from 'svelte-icons-pack/fa'
+	import { FaSolidUpLong } from 'svelte-icons-pack/fa'
 	import type { Note, Profile } from '../types'
+	import TextArea from './partials/TextArea.svelte'
+	import Button from './partials/Button.svelte'
+	import { openModal } from 'svelte-modals'
+	import EmojiModal from './partials/Emoji/EmojiModal.svelte'
+	import { closeModal } from 'svelte-modals'
 
 	const dispatch = createEventDispatcher()
 	export let note: Note
@@ -51,14 +52,10 @@
 		}
 	}
 
-	function reply(note: Note) {
-		dispatch('reply', note)
-	}
-
 	function info(note: Note) {
 		dispatch('info', note)
 	}
-	
+
 	function showProfile(note: Note) {
 		dispatch('show_profile', note.profile)
 	}
@@ -78,7 +75,7 @@
 
 	function normalizeName(profile: Profile): string {
 		if (profile == undefined) {
-			console.debug("No profile available")
+			console.debug('No profile available')
 			return note.event.pubkey
 		}
 		console.debug(profile)
@@ -126,6 +123,54 @@
 		return ''
 	}
 
+	function openEmoji() {
+		openModal(EmojiModal, {
+			onAddEmoji: (emoji) => {
+				textContent += emoji
+			}
+		})
+	}
+
+	function sendReply() {
+		dispatch('replyToNote', {'replyTo': note, 'content': textContent})
+		hideReplyForm()
+	}
+
+	let formStatus = "closed"
+	function showReplyForm(note: Note) {
+		let id = 'reply_' + note.event.id
+		console.debug(id)
+		let elm = document.getElementById(id)
+		
+		if (formStatus == "closed") {
+			elm.classList.remove('hidden')
+			elm.classList.add('visible')
+			formStatus = "open"
+			return
+		}
+		
+		if (formStatus == "open") {
+			elm.classList.remove('visible')
+			elm.classList.add('hidden')
+			formStatus = "closed"
+			return
+		}
+
+		//dispatch('reply', note)
+	}
+
+	function hideReplyForm() {
+		let id = 'reply_' + note.event.id
+		console.debug(id)
+		let elm = document.getElementById(id)
+		elm.classList.remove('visible')
+		elm.classList.add('hidden')
+		textContent = ''
+		//onSendTextNote(textContent)
+	}
+
+	let textContent: string = ''
+
 	$: followed = note.profile.followed
 	$: bookmarked = note.bookmark
 </script>
@@ -142,65 +187,69 @@
 			>
 				<div
 					id={note.id}
-					class="flex w-full min-h-full {align()} items-top gap-2 mb-2 overflow-y-auto bg-slate-200 rounded-lg p-1 {childBlock()}"
+					class="flex flex-col w-full min-h-full {align()} items-top gap-2 mb-2 overflow-y-auto bg-slate-200 rounded-lg p-1 {childBlock()}"
 				>
-					<div
-						on:keyup={() => console.log('keyup')}
-						class="w-16 mr-2 max-w-min min-w-fit"
-						tabindex="0"
-						role="button"
-						on:click={showProfile(note)}
-					>
-						<img
-							class="w-14 h-14 rounded-full {followed ? 'border-2 border-green-800' : ''}"
-							src={note.profile.picture != '' && note.profile.picture != undefined ? note.profile.picture : placeholder}
-							title={note.profile.about ? note.profile.about : ''}
-							alt={note.event.pubkey.slice(0, 10)}
-						/>
-					</div>
-
-					<div class="flex flex-col w-full">
-						<div class="px-2">
-							<div class="flex w-full border-b border-gray-400">
-								<div class="text-left order-first w-full">
-									<strong class="text-black text-sm font-medium">
-										<span title={note.event.pubkey}>{normalizeName(note.profile)}</span>
-										{#if bookmarked}
-											<i class="fa-solid fa-bookmark" />
-										{/if}
-										<small class="text-gray"
-											>{new Date(note.event.created_at * 1000).toLocaleString('nl-NL')}</small
-										>
-									</strong>
-								</div>
-
-								
-							</div>
+					<div class="flex p-2">
+						<div
+							on:keyup={() => console.log('keyup')}
+							class="w-16 mr-2 max-w-min min-w-fit"
+							tabindex="0"
+							role="button"
+							on:click={showProfile(note)}
+						>
+							<img
+								class="w-14 h-14 rounded-full {followed ? 'border-2 border-green-800' : ''}"
+								src={note.profile.picture != '' && note.profile.picture != undefined
+									? note.profile.picture
+									: placeholder}
+								title={note.profile.about ? note.profile.about : ''}
+								alt={note.event.pubkey.slice(0, 10)}
+							/>
 						</div>
 
-						<div class="p-2 w-11/12">
-							<div class="text-left w-full max-w-max break-words items-top">
-								<NoteContent {note} on:profileInfo on:noteInfo></NoteContent>
-							</div>
-						</div>
-
-						<div class="w-full">
-							<p class="mt-4 flex space-x-8 w-full p-1">
-								<span>
-									{#if note.children && Object.keys(note.children).length > 0}
-										<button type="button" on:click={toggleReplies}>
-											{#if repliesExpanded}
-												<Icon src={FaFolderOpen} size="24" className="inline" />
-											{:else}
-												<Icon src={FaFolder} size="24" className="inline" />
+						<div class="flex flex-col w-full">
+							<div class="px-2">
+								<div class="flex w-full border-b border-gray-400">
+									<div class="text-left order-first w-full">
+										<strong class="text-black text-sm font-medium">
+											<span title={note.event.pubkey}>{normalizeName(note.profile)}</span>
+											{#if bookmarked}
+												<i class="fa-solid fa-bookmark" />
 											{/if}
-											<small>({Object.keys(note.children).length})</small>
-										</button>
-									{/if}
-								</span>
-							</p>
+											<small class="text-gray"
+												>{new Date(note.event.created_at * 1000).toLocaleString('nl-NL')}</small
+											>
+										</strong>
+									</div>
+								</div>
+							</div>
+
+							<div class="p-2 w-11/12">
+								<div class="text-left w-full max-w-max break-words items-top">
+									<NoteContent {note} on:profileInfo on:noteInfo></NoteContent>
+								</div>
+							</div>
+
+							<div class="w-full">
+								<p class="mt-4 flex space-x-8 w-full p-1">
+									<span>
+										{#if note.children && Object.keys(note.children).length > 0}
+											<button type="button" on:click={toggleReplies}>
+												{#if repliesExpanded}
+													<Icon src={FaFolderOpen} size="24" className="inline" />
+												{:else}
+													<Icon src={FaFolder} size="24" className="inline" />
+												{/if}
+												<small>({Object.keys(note.children).length})</small>
+											</button>
+										{/if}
+									</span>
+								</p>
+							</div>
 						</div>
-						<div class="text-right order-last md:w-full border-t border-gray-400 p-2">
+					</div>
+					<div class="flex w-full p-2">
+						<div class="text-right md:w-full border-t border-gray-400 p-2">
 							<div class="text-right">
 								<div class="flex content-normal justify-center gap-4">
 									<div>
@@ -228,16 +277,16 @@
 									</div>
 
 									<div>
-										<button on:click={reply(note)} title="reply"
+										<button on:click={showReplyForm(note)} title="reply"
 											><Icon src={FaCommentDots} size="24" color="white" /></button
 										>
 									</div>
 									<div>
 										<button on:click={info(note)} title="info"
-											><Icon src={FaSolidInfoCircle} size="24" color="white" /></button
+											><Icon src={FaSolidCircleInfo} size="24" color="white" /></button
 										>
 									</div>
-									
+
 									<div>
 										<button on:click={blockUser(note.event.pubkey)} title="block"
 											><Icon src={FaSolidBan} size="24" color="white" /></button
@@ -245,12 +294,40 @@
 									</div>
 									<div>
 										<button on:click={gotoTopOfPage(note)} title="block"
-											><Icon src={FaSolidLongArrowAltUp} size="24" color="white" /></button
+											><Icon src={FaSolidUpLong} size="24" color="white" /></button
 										>
 									</div>
 								</div>
 							</div>
 						</div>
+					</div>
+
+					<div class="flex flex-col w-full p-2">
+						<form on:submit|preventDefault id="reply_{note.event.id}" class="hidden">
+							<TextArea
+								id="reply{note.event.id}"
+								placeholder="Add reply"
+								cols="30"
+								rows="5"
+								bind:textContent
+							/>
+							<div class="flex space-x-1 p-2">
+								<div class="justify-items-start w-4/12">
+									<Button click={sendReply} class="space-x-1"
+										><i class="fa-solid fa-paper-plane" />
+										<span>Reply</span>
+									</Button>
+								</div>
+								<div class="w-4/12 flex justify-center">
+									<Button click={openEmoji} class="bg-yellow-500 hover:bg-yellow-700"
+										>😀 Emoji</Button
+									>
+								</div>
+								<div class="w-4/12 flex justify-end">
+									<Button click={hideReplyForm} class="bg-red-500 hover:bg-red-700">Cancel</Button>
+								</div>
+							</div>
+						</form>
 					</div>
 				</div>
 				{#if repliesExpanded}

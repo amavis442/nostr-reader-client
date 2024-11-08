@@ -67,7 +67,7 @@
 
 	function getMetaData() {
 		fetch(`${import.meta.env.VITE_API_LINK}/api/getmetadata`, {
-			method: 'POST',
+			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json'
 			}
@@ -94,7 +94,7 @@
 
 	onMount(async () => {
 		fetch(`${import.meta.env.VITE_API_LINK}/api/getprofile`, {
-			method: 'POST',
+			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json'
 			}

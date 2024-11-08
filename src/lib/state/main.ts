@@ -29,7 +29,7 @@ const elm: null | HTMLElement = document.getElementById('content')
 
 export async function refreshView(page: Page) {
 	let params = new URLSearchParams(page).toString()
-	
+
 	return await fetch(apiUrl + "?" + params, {
 		method: 'GET',
 		headers: {
@@ -41,23 +41,34 @@ export async function refreshView(page: Page) {
 		})
 		.then((response) => {
 			console.log('Json is ', response)
-			let paging = response.data.paging
-			paginator.set({
-				cursor: paging.cursor,
-				previous_cursor: paging.previous_cursor,
-				next_cursor: paging.next_cursor,
-				per_page: paging.per_page,
-				since: paging.since,
-				context: page.context
-			})
-			pageData.set(response.data.events)
-			console.debug(paginator)
-		})
-		.then(() => {
-			//const elm: null|HTMLElement = document.getElementById("content")
-			if (elm) {
-				elm.scrollTo(0, 0)
+			if (response.status != "empty") {
+				let paging = response.data.paging
+				paginator.set({
+					cursor: paging.cursor,
+					previous_cursor: paging.previous_cursor,
+					next_cursor: paging.next_cursor,
+					per_page: paging.per_page,
+					since: paging.since,
+					context: page.context
+				})
+				pageData.set(response.data.events)
+				console.debug(paginator)
+				return 1
+			} else {
+				return 3
 			}
+
+		})
+		.then((resultCode) => {
+			//const elm: null|HTMLElement = document.getElementById("content")
+			if (resultCode == 1) {
+				if (elm) {
+					elm.scrollTo(0, 0)
+				}
+			}
+
+			console.debug("Resultcode is ",resultCode)
+			return resultCode
 		})
 		.catch((err) => {
 			console.error('error', err)
@@ -143,7 +154,7 @@ export function followUser(pubkey: string) {
 				per_page: paginatorData.per_page,
 				since: paginatorData.since,
 				renew: false,
-				context:  paginatorData.context
+				context: paginatorData.context
 			})
 			return response
 		})
@@ -191,7 +202,7 @@ export async function getNewNotesCount(context: string | null): Promise<number> 
 		since: paginatorData.since,
 		renew: false,
 		context: context ?? "follow"
-		}
+	}
 
 	const data = await fetch(`${import.meta.env.VITE_API_LINK}/api/getnewnotescount?` + new URLSearchParams(params).toString(), {
 		method: 'GET',
@@ -248,18 +259,20 @@ export async function publish(msg: string, note: Note | null) {
 		.then((response) => {
 			console.debug('Json is ', response, ' and note is ', note)
 			const paginatorData = get(paginator)
+			// Rootnote
 			if (response.status == 'ok' && note == null) {
 				refreshView({
 					cursor: paginatorData.cursor,
 					prev_cursor: 0,
 					next_cursor: 0,
 					per_page: paginatorData.per_page,
-					since: paginatorData.since,
+					since: 0,
 					renew: true,
 					context: paginatorData.context
 				})
 			}
 
+			//Reply to note
 			if (response.status == 'ok' && note != null) {
 				console.debug('Refresh after publish: ', note.event.id)
 				refreshView({
@@ -267,7 +280,7 @@ export async function publish(msg: string, note: Note | null) {
 					prev_cursor: 0,
 					next_cursor: 0,
 					per_page: paginatorData.per_page,
-					since: paginatorData.since,
+					since: 0,
 					renew: false,
 					context: paginatorData.context
 				})
@@ -279,7 +292,7 @@ export async function publish(msg: string, note: Note | null) {
 		})
 }
 
-export async function syncPage() {
+export async function syncPage(): Promise<void|number> {
 	const paginatorData = get(paginator)
 	const currentPageData = get(pageData)
 	let ids: Array<string> = [];
@@ -289,7 +302,7 @@ export async function syncPage() {
 	})
 	//JSON.stringify(ids)
 
-	await refreshView({
+	return await refreshView({
 		cursor: paginatorData.cursor,
 		prev_cursor: 0,
 		next_cursor: 0,
