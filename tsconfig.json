@@ -12,8 +12,13 @@
     "strict": false,
     "allowJs": true,
     "checkJs": true,
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
+    "lib": [
+        "esnext", 
+        "dom", 
+        "dom.iterable"
+    ],
+    "module": "esnext",
+    "target": "esnext",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true, 
