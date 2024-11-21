@@ -7,6 +7,7 @@
   import Account from "./routes/settings/Account.svelte";
   import Relay from "./routes/settings/Relay.svelte";
   import Profiles from "./routes/Profiles.svelte";
+  import SearchProfiles from "./routes/SearchProfiles.svelte";
   import "@fortawesome/fontawesome-free/css/fontawesome.css";
   import "@fortawesome/fontawesome-free/css/solid.css";
   import Toasts from "./components/partials/Toast/Toasts.svelte";
@@ -62,6 +63,11 @@
             <span class="{active ? 'selected' : ''}">Relays</span>
           </Link>
         </p>
+        <p class="nav-p {url === '/searchprofiles' ? 'selected' : ''}">
+          <Link to="searchprofiles" title="Search for profiles" let:active>
+            <span class="{active ? 'selected' : ''}">Search profile</span>
+          </Link>
+        </p>
         <p class="nav-p {url === '/profiles' ? 'selected' : ''}">
           <Link to="profiles" title="Your followed profiles" let:active>
             <span class="{active ? 'selected' : ''}">Followed</span>
@@ -70,7 +76,7 @@
       </nav>
     </div>
 
-    <main class="xl:w-8/12 md:w-9/12 sm:w-full overflow-y-auto">
+    <main class="xl:w-8/12 md:w-9/12 sm:w-full">
       <Route path="/" component="{Followed}" />
       <Route path="global" component="{Feed}" />
       <Route path="inbox" component="{Inbox}" />
@@ -79,6 +85,7 @@
       <Route path="account" component="{Account}" />
       <Route path="relay" component="{Relay}" />
       <Route path="profiles" component="{Profiles}" />
+      <Route path="searchprofiles" component="{SearchProfiles}" />
     </main>
   </div>
 </Router>

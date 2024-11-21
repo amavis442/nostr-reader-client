@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import Link from "../Link.svelte";
+  import ImageLoader from '../Image/ImageLoader.svelte';
 
   export let url: string = "";
   export let endpoint: string;
@@ -40,11 +41,11 @@
     >
       <Link href={url}>
         {#if preview.images}
-          <img src={preview.images[0]} alt={preview.description} class="object-contain h-56"/>
+          <ImageLoader src={preview.images[0]} alt={preview.description}></ImageLoader>
           <div class="h-px bg-medium" />
         {/if}
         {#if preview.mediaType == "image"}
-          <img src={preview.url} alt={preview.url} class="object-contain h-56"/>
+          <ImageLoader src={preview.url} alt={preview.url}/>
           <div class="h-px bg-medium" />
         {/if}
 

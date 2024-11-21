@@ -27,10 +27,10 @@ export function setApiUrl(url: string) {
 
 const elm: null | HTMLElement = document.getElementById('content')
 
-export async function refreshView(page: Page) {
+export async function refreshView(page: Page): Promise<void | number> {
 	let params = new URLSearchParams(page).toString()
 
-	return await fetch(apiUrl + "?" + params, {
+	return fetch(apiUrl + "?" + params, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json'
@@ -67,7 +67,7 @@ export async function refreshView(page: Page) {
 				}
 			}
 
-			console.debug("Resultcode is ",resultCode)
+			console.debug("Resultcode is ", resultCode)
 			return resultCode
 		})
 		.catch((err) => {
@@ -246,53 +246,19 @@ export async function getLastSeenId(): Promise<number> {
 
 //Todo: needs same fix as sync note so only a portion of the view is updated and not the complete view.
 export async function publish(msg: string, note: Note | null) {
-	await fetch(`${import.meta.env.VITE_API_LINK}/api/publish`, {
+	return fetch(`${import.meta.env.VITE_API_LINK}/api/publish`, {
 		method: 'POST',
 		body: JSON.stringify({ msg: msg, event_id: note ? note.event.id : '' }),
 		headers: {
 			'Content-Type': 'application/json'
 		}
 	})
-		.then((res) => {
-			return res.json()
-		})
-		.then((response) => {
-			console.debug('Json is ', response, ' and note is ', note)
-			const paginatorData = get(paginator)
-			// Rootnote
-			if (response.status == 'ok' && note == null) {
-				refreshView({
-					cursor: paginatorData.cursor,
-					prev_cursor: 0,
-					next_cursor: 0,
-					per_page: paginatorData.per_page,
-					since: 0,
-					renew: true,
-					context: paginatorData.context
-				})
-			}
-
-			//Reply to note
-			if (response.status == 'ok' && note != null) {
-				console.debug('Refresh after publish: ', note.event.id)
-				refreshView({
-					cursor: paginatorData.cursor,
-					prev_cursor: 0,
-					next_cursor: 0,
-					per_page: paginatorData.per_page,
-					since: 0,
-					renew: false,
-					context: paginatorData.context
-				})
-			}
-			return response
-		})
-		.catch((err) => {
-			console.error('error', err)
-		})
+	.then((res) => {
+		return res.json()
+	})
 }
 
-export async function syncPage(): Promise<void|number> {
+export async function syncPage(): Promise<void | number> {
 	const paginatorData = get(paginator)
 	const currentPageData = get(pageData)
 	let ids: Array<string> = [];
@@ -302,7 +268,7 @@ export async function syncPage(): Promise<void|number> {
 	})
 	//JSON.stringify(ids)
 
-	return await refreshView({
+	return refreshView({
 		cursor: paginatorData.cursor,
 		prev_cursor: 0,
 		next_cursor: 0,

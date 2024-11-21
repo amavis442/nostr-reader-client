@@ -89,19 +89,19 @@
 	let borderColor = 'border-blue-100'
 	switch (note.tree) {
 		case 0:
-			borderColor = 'border-blue-200'
+			borderColor = 'border-blue-700'
 			break
 		case 1:
-			borderColor = 'border-blue-300'
+			borderColor = 'border-blue-700'
 			break
 		case 2:
-			borderColor = 'border-blue-400'
+			borderColor = 'border-red-700'
 			break
 		case 3:
-			borderColor = 'border-blue-500'
+			borderColor = 'border-pink-700'
 			break
 		default:
-			borderColor = 'border-blue-100'
+			borderColor = 'border-blue-700'
 	}
 
 	function align() {
@@ -251,7 +251,7 @@
 					<div class="flex w-full p-2">
 						<div class="text-right md:w-full border-t border-gray-400 p-2">
 							<div class="text-right">
-								<div class="flex content-normal justify-center gap-4">
+								<div class="flex content-normal justify-center gap-2">
 									<div>
 										{#if followed}
 											<button on:click={unfollowUser(note.event.pubkey)} title="unfollow"
@@ -342,7 +342,7 @@
 										on:followUser
 										on:unfollowUser
 										on:blockUser
-										on:reply
+										on:replyToNote
 										on:info
 										on:topPage
 										on:profileInfo
