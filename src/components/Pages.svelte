@@ -101,6 +101,12 @@
 						renew: false,
 						context: $paginator.context
 					})
+					addToast({
+						message: 'Message published',
+						type: 'info',
+						dismissible: true,
+						timeout: 3000
+					})
 				}
 				return response
 			})
@@ -121,6 +127,21 @@
 						since: 0,
 						renew: true,
 						context: $paginator.context
+					})
+					textContent = ''
+					addToast({
+						message: 'Message published',
+						type: 'info',
+						dismissible: true,
+						timeout: 3000
+					})
+				}
+				if (response.status != 'ok') {
+					addToast({
+						message: 'Unable to ppublish message',
+						type: 'error',
+						dismissible: true,
+						timeout: 3000
 					})
 				}
 			})
