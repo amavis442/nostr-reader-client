@@ -11,4 +11,16 @@ export default defineConfig({
     //extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.dev.js', '.wasm'],
   },
   plugins: [svelte()],
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true, // also necessary
+    rollupOptions: {
+      output: {
+        dir: 'public',
+        //entryFileNames: 'assets/bundle.js'
+        // https://rollupjs.org/configuration-options/
+      }
+    },
+  },
+  publicDir: 'assets'
 })
