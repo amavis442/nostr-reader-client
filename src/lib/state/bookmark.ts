@@ -1,6 +1,8 @@
-import {refreshView, paginator} from './main.ts';
 import { get } from 'svelte/store';
-
+import type { Page } from '../../types'
+import './searchparams.ts'
+import {paginator} from './paginator.ts'
+import {refreshView}  from './page.ts'
 
 export function addBookmark(eventID: string) {
     fetch(`${import.meta.env.VITE_API_LINK}/api/bookmark`, {
@@ -16,14 +18,16 @@ export function addBookmark(eventID: string) {
       .then((data) => {
         console.log("Json is ", data);
         const paginatorData = get(paginator)
-        refreshView({
-          page: paginatorData.current_page,
-          limit: paginatorData.limit,
-          since: paginatorData.since,
-          renew: false,
-          maxid: paginatorData.maxid,
-          context: 'follow'
-        });
+        const params: Page = {
+          cursor: paginatorData.cursor,
+					prev_cursor: paginatorData.previous_cursor,
+					next_cursor: paginatorData.next_cursor,
+					per_page: paginatorData.per_page,
+					since: paginatorData.since,
+					context: 'follow',
+          renew: false
+        }
+        refreshView(params);
         return data;
       })
       .catch((err) => {
@@ -46,12 +50,13 @@ export function addBookmark(eventID: string) {
         console.log("Json is ", data);
         const paginatorData = get(paginator)
         refreshView({
-          page: paginatorData.current_page,
-          limit: paginatorData.limit,
-          since: paginatorData.since,
-          renew: false,
-          maxid: paginatorData.maxid,
-          context: 'bookmark'
+          cursor: paginatorData.cursor,
+					prev_cursor: paginatorData.previous_cursor,
+					next_cursor: paginatorData.next_cursor,
+					per_page: paginatorData.per_page,
+					since: paginatorData.since,
+          context: 'bookmark',
+          renew: false
         });
         return data;
       })

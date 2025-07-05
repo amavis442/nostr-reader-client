@@ -1,5 +1,5 @@
 <script>
-	import { paginator } from '../../lib/state/main'
+	import { paginator } from '../../lib/state/paginator'
 	import { createEventDispatcher } from 'svelte'
 
 	const dispatch = createEventDispatcher()

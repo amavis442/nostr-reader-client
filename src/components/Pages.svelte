@@ -10,17 +10,11 @@
 	import { FaSolidArrowsRotate } from 'svelte-icons-pack/fa'
 	import { openModal } from 'svelte-modals'
 	import EmojiModal from './partials/Emoji/EmojiModal.svelte'
-	import {
-		refreshView,
-		blockUser,
-		followUser,
-		unfollowUser,
-		publish,
-		pageData,
-		setApiUrl,
-		paginator,
-		syncPage
-	} from '../lib/state/main'
+	import { refreshView, syncPage } from '../lib/state/page'
+	import { blockUser, followUser, unfollowUser } from '../lib/state/user'
+	import { paginator } from '../lib/state/paginator'
+	import { pageData, setApiUrl } from '../lib/state/page'
+	import { publish } from '../lib/state/note'
 	import { addBookmark, removeBookmark } from '../lib/state/bookmark'
 	import type { Note, Profile, NostrEvent } from '../types'
 	import { addToast } from './partials/Toast/toast'

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 	import { toHtml, findLink } from '../../lib/util/html'
-	import { tranlateContent } from '../../lib/state/main'
+	import { tranlateContent } from '../../lib/state/translate'
 	import Preview from './Preview/Preview.svelte'
 	import { createEventDispatcher } from 'svelte'
 

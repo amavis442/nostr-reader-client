@@ -390,28 +390,5 @@
 	button {
 		@apply p-2 text-gray-800 border-2 border-gray-400 bg-slate-400 rounded ml-1 mr-1;
 	}
-
-	include-color-blue-100 {
-		@apply border-blue-100;
-	}
-
-	include-color-blue-200 {
-		@apply border-blue-200;
-	}
-
-	include-color-blue-300 {
-		@apply border-blue-300;
-	}
-
-	include-color-blue-400 {
-		@apply border-blue-400;
-	}
-
-	include-color-blue-500 {
-		@apply border-blue-500;
-	}
-
-	include-color-blue-600 {
-		@apply border-blue-600;
-	}
+	
 </style>
