@@ -1,0 +1,29 @@
+/* ABOUTME: Global stylesheet — imports Tailwind v4 and defines the Twitter/X-inspired design tokens. */
+/* ABOUTME: Custom color tokens defined here are available as Tailwind utilities (bg-brand, text-muted, etc.). */
+@import "tailwindcss";
+
+@theme {
+  --font-family-sans: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+
+  /* Twitter/X colour palette */
+  --color-brand:      #1d9bf0;
+  --color-brand-dark: #1a8cd8;
+  --color-surface:    #16181c;
+  --color-divider:    #2f3336;
+  --color-muted:      #71767b;
+  --color-danger:     #f4212e;
+  --color-success:    #00ba7c;
+}
+
+html, body {
+  background-color: #000;
+  color: #e7e9ea;
+  font-family: var(--font-family-sans);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Slim dark scrollbar */
+::-webkit-scrollbar        { width: 4px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background-color: #2f3336; border-radius: 2px; }
