@@ -1,6 +1,6 @@
 export type Toast = {
-    message: string;
-    type: string;
-    dismissible: boolean;
-    timeout: number;
-}
+  message: string;
+  type: string;
+  dismissible: boolean;
+  timeout: number;
+};
