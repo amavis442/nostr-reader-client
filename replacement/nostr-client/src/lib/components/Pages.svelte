@@ -102,7 +102,7 @@
 	}
 
 	function topOfPage(_ev: any) {
-		document.getElementById('content')?.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+		window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
 	}
 
 	function openEmoji() {
@@ -185,7 +185,7 @@
 	{/if}
 
 	<!-- Notes list -->
-	<ul class="divide-y divide-divider" id="content">
+	<ul class="divide-y divide-divider">
 		{#each $pageData ? $pageData : [] as note (note.event.id)}
 			<TextNote
 				{note}

@@ -6,8 +6,8 @@ import { getSearchParams } from "./searchparams";
 let apiUrl: string;
 
 function scrollContentToTop() {
-  if (typeof document !== 'undefined') {
-    document.getElementById('content')?.scrollTo(0, 0);
+  if (typeof window !== 'undefined') {
+    window.scrollTo(0, 0);
   }
 }
 
