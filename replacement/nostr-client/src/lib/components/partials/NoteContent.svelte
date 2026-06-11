@@ -42,10 +42,10 @@
 
 	function processRefs(note: Note): string {
 		const eventPrefix =
-			"<div class='rounded-2xl border border-solid border-medium bg-indigo-300 overflow-hidden p-1 m-2' id='noteid'> <i class='fa-regular fa-note-sticky'></i> "
+			"<div class='rounded-2xl border border-solid border-brand/30 bg-brand/10 text-brand overflow-hidden p-1 m-2' id='noteid'> <i class='fa-regular fa-note-sticky'></i> "
 		const eventAffix = '</div>'
 		const profilePrefix =
-			"<span class='rounded-2xl border border-solid border-medium bg-indigo-300 overflow-hidden p-1' id='profileid'><i class='fa-solid fa-user'></i> "
+			"<span class='rounded-2xl border border-solid border-brand/30 bg-brand/10 text-brand overflow-hidden p-1' id='profileid'><i class='fa-solid fa-user'></i> "
 		const profileAffix = '</span>'
 		let content: string = note.content
 
