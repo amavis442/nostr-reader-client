@@ -129,7 +129,7 @@
 		{#if translatedContent != ''}
 			<div
 				id="translateContent_{note.event.id}"
-				class="rounded-2xl border border-solid border-medium bg-white p-4 mt-2 mb-2"
+				class="rounded-2xl border border-solid border-divider bg-surface p-4 mt-2 mb-2"
 			>
 				{translatedContent}
 			</div>

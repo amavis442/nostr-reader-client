@@ -45,20 +45,20 @@
 
 {#if preview}
     <div
-      class="rounded-2xl max-w-96 border border-solid border-medium bg-white overflow-hidden"
+      class="rounded-2xl max-w-96 border border-solid border-divider bg-surface overflow-hidden"
     >
       <Link href={url}>
         {#if preview.images}
           <ImageLoader src={preview.images[0]} alt={preview.description}></ImageLoader>
-          <div class="h-px bg-medium"></div>
+          <div class="h-px bg-divider"></div>
         {/if}
         {#if preview.mediaType == "image"}
           <ImageLoader src={preview.url} alt={preview.url}/>
-          <div class="h-px bg-medium"></div>
+          <div class="h-px bg-divider"></div>
         {/if}
 
         {#if preview.title}
-          <div class="px-4 py-2 text-black flex flex-col bg-white">
+          <div class="px-4 py-2 text-[#e7e9ea] flex flex-col bg-surface">
             <strong class="whitespace-nowrap text-ellipsis overflow-hidden"
               >{preview.title}</strong
             >
