@@ -40,7 +40,7 @@
 		<div class="contents">
 			<form onsubmit={(e) => e.preventDefault()}>
 				{#if note}
-					<h5 class="text-gray-900 text-xl font-medium mb-2">
+					<h5 class="text-[#e7e9ea] text-xl font-medium mb-2">
 						Re: {note.event.content.slice(0, 30)}<br />
 						<small>{note.event.id.slice(0, 5)}...{note.event.id.slice(-5)}</small>
 					</h5>
@@ -52,7 +52,7 @@
 						bind:textContent
 					/>
 				{:else}
-					<h5 class="text-gray-900 text-xl font-medium mb-2">Create a new note</h5>
+					<h5 class="text-[#e7e9ea] text-xl font-medium mb-2">Create a new note</h5>
 					<TextArea
 						id="create-note"
 						placeholder="Create a note"
@@ -100,7 +100,9 @@
 		min-width: 460px;
 		border-radius: 6px;
 		padding: 16px;
-		background: white;
+		background: #16181c;
+		color: #e7e9ea;
+		border: 1px solid #2f3336;
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;

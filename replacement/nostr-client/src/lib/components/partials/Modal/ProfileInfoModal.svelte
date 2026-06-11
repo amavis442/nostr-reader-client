@@ -19,7 +19,7 @@
 	<div role="dialog" class="modal">
 		<div class="contents w-1/2">
 			<form>
-				<h5 class="text-gray-900 text-xl font-medium mb-2">
+				<h5 class="text-[#e7e9ea] text-xl font-medium mb-2">
 					Metadata for profile: <strong>{profile.name}</strong>
 				</h5>
 				<div class="flex flex-col p-2 w-full">
@@ -71,7 +71,9 @@
 		min-width: 460px;
 		border-radius: 6px;
 		padding: 16px;
-		background: white;
+		background: #16181c;
+		color: #e7e9ea;
+		border: 1px solid #2f3336;
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;

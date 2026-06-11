@@ -125,12 +125,12 @@
 </script>
 
 <div class="w-10/12 p-4">
-	<div class="block p-6 rounded-lg shadow-lg w-full ml-6 mt-6 bg-blue-200">
+	<div class="block p-6 rounded-lg shadow-lg w-full ml-6 mt-6 bg-surface border border-divider">
 		<form onsubmit={(e) => e.preventDefault()}>
 			<div class="row">
 				<div class="flex justify-end w-full gap-2">
 					<div class="justify-items-start w-7/12">
-						<label for="myname" class="text-gray-700 w-1/12">Url </label>
+						<label for="myname" class="text-[#e7e9ea] w-1/12">Url </label>
 						<input
 							type="text"
 							class="text"
@@ -168,7 +168,7 @@
 
 				{#each relays as relay (relay.url)}
 					<div class="flex justify-between space-x-1 p-2">
-						<div class="w-1/2 rounded border border-gray-600 p-2 hover:bg-gray-400">
+						<div class="w-1/2 rounded border border-divider p-2 hover:bg-white/[0.06]">
 							<strong>{relay.url}</strong>
 						</div>
 						<div class="p-1">
@@ -193,13 +193,13 @@
 </div>
 
 <style lang="postcss">
-	@reference "tailwindcss";
+	@reference "../../../app.css";
 
 	.text {
 		@apply w-11/12 px-3 py-1.5 text-base font-normal
-        text-gray-700 bg-white bg-clip-padding border border-solid
-        border-gray-300 rounded transition ease-in-out m-0 
-		focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none;
+        text-[#e7e9ea] bg-black bg-clip-padding border border-solid
+        border-divider rounded transition ease-in-out m-0
+		focus:text-[#e7e9ea] focus:bg-black focus:border-brand focus:outline-none;
 	}
 	.btn {
 		@apply px-6 py-2.5 bg-blue-600 text-white font-medium text-xs

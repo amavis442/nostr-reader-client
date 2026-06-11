@@ -85,13 +85,13 @@
 </script>
 
 <div class="xl:w-10/12 lg:w-10/12 md:w-10/12 sm:w-full">
-	<div class="block p-6 rounded-lg shadow-lg w-full ml-6 mt-6 bg-blue-200">
+	<div class="block p-6 rounded-lg shadow-lg w-full ml-6 mt-6 bg-surface border border-divider">
 		<form onsubmit={(e) => e.preventDefault()}>
 			<div class="row">
 				<div class="flex justify-end w-full gap-2">
 					<div class="justify-items-start w-full flex-col">
 						<div class="pb-2">
-							<div class="text-gray-700 w-1/12 p-2 font-sans font-semibold text-lg"
+							<div class="text-[#e7e9ea] w-1/12 p-2 font-sans font-semibold text-lg"
 								>Name/Displayname/Pubkey/Npub</div>
 						</div>
 						<div class="w-full flex">
@@ -114,7 +114,7 @@
 
 				<hr class="m-2" />
 				{#each $profiles as profile (profile.pubkey)}
-					<div class="flex space-x-1 p-2 hover:bg-gray-400 rounded">
+					<div class="flex space-x-1 p-2 hover:bg-white/[0.06] rounded">
 						<div class="justify-items-start w-9/12">
 							<strong
 								>{profile.name} ({profile.pubkey.slice(0, 5)}...{profile.pubkey.slice(
@@ -146,13 +146,13 @@
 </div>
 
 <style lang="postcss">
-	@reference "tailwindcss";
+	@reference "../../app.css";
 
 	.text {
 		@apply w-full px-3 py-1.5 text-base font-normal
-        text-gray-700 bg-white bg-clip-padding border border-solid
-        border-gray-300 rounded transition ease-in-out m-0 
-		focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none;
+        text-[#e7e9ea] bg-black bg-clip-padding border border-solid
+        border-divider rounded transition ease-in-out m-0
+		focus:text-[#e7e9ea] focus:bg-black focus:border-brand focus:outline-none;
 	}
 	.btn {
 		@apply px-2.5 py-2.5 bg-blue-600 text-white font-medium text-xs

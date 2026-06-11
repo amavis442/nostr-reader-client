@@ -48,12 +48,12 @@
           />
         </div>
         <div class="w-full pl-6 pb-6">
-          <h5 class="text-gray-900 text-xl font-medium mb-2">
+          <h5 class="text-[#e7e9ea] text-xl font-medium mb-2">
             {user && user.name
               ? user.name.slice(0, 20)
               : note.pubkey.slice(0, 10)}
           </h5>
-          <p class="text-gray-700 text-base mb-4">
+          <p class="text-muted text-base mb-4">
             {user.about}
           </p>
         </div>
@@ -95,7 +95,9 @@
     min-width: 440px;
     border-radius: 6px;
     padding: 16px;
-    background: white;
+    background: #16181c;
+    color: #e7e9ea;
+    border: 1px solid #2f3336;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
