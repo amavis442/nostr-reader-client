@@ -49,7 +49,6 @@ export async function refreshView(page: Page): Promise<void | number> {
       }
     })
     .then((resultCode) => {
-      //const elm: null|HTMLElement = document.getElementById("content")
       if (resultCode == 1) {
         scrollContentToTop();
       }
@@ -91,13 +90,6 @@ export async function refresh() {
 
 export async function syncPage(): Promise<void | number> {
   const paginatorData = get(paginator);
-  const currentPageData = get(pageData);
-  let ids: Array<string> = [];
-
-  currentPageData.forEach((note) => {
-    ids.push(note.event.id);
-  });
-  //JSON.stringify(ids)
 
   return refreshView({
     cursor: paginatorData.cursor,
