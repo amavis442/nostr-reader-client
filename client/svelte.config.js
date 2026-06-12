@@ -1,4 +1,4 @@
-import adapter from '@sveltejs/adapter-auto';
+import adapter from '@sveltejs/adapter-static';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -10,7 +10,15 @@ const config = {
 		runes: ({ filename }) => (filename.split(/[/\\]/).includes('node_modules') ? undefined : true)
 	},
 	kit: {
-		adapter: adapter()
+		// SPA build: the app fetches all data client-side from the Go API, so it is served as
+		// static files. Output lands in the repo-root ./public dir that the Go server serves.
+		adapter: adapter({
+			pages: '../public',
+			assets: '../public',
+			fallback: 'index.html',
+			precompress: false,
+			strict: false
+		})
 	}
 };
 

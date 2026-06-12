@@ -5,6 +5,7 @@
 APP_NAME   := nostr-reader-client
 CMD_PATH   := ./cmd/api
 BIN_DIR    := bin
+CLIENT_DIR := client
 
 # Detect host OS voor default target
 ifeq ($(OS),Windows_NT)
@@ -77,40 +78,38 @@ build-go-windows:
 ## build-go-all: Compileer Go binary voor zowel Linux als Windows
 build-go-all: build-go-linux build-go-windows
 
-## build-svelte: Typecheck + Vite productie-build
+## build-svelte: Bouw de SvelteKit client (static) naar ./public
 build-svelte:
-	@echo "[svelte] Bouwen (typecheck + vite build)..."
-	npm run build
+	@echo "[svelte] Bouwen (vite build → ./public)..."
+	cd $(CLIENT_DIR) && npm run build
 
 ## dev: Start Svelte dev-server én Go in watch-mode naast elkaar
 dev:
 	@echo "[dev] Svelte dev-server + Go air/run starten..."
 	@if command -v air > /dev/null 2>&1; then \
-		air -c .air.toml & npm run dev; \
+		air -c .air.toml & (cd $(CLIENT_DIR) && npm run dev); \
 	else \
-		go run $(CMD_PATH)/main.go & npm run dev; \
+		go run $(CMD_PATH)/main.go & (cd $(CLIENT_DIR) && npm run dev); \
 	fi
 
-## fmt: Formateer Svelte/TS én Go broncode
+## fmt: Formateer Go broncode
 fmt:
-	@echo "[fmt] Prettier..."
-	npm run fmt
 	@echo "[fmt] gofmt..."
 	gofmt -w .
 
 ## check: Svelte-check + Go vet
 check:
 	@echo "[check] svelte-check..."
-	npm run svelte-check
+	cd $(CLIENT_DIR) && npm run check
 	@echo "[check] go vet..."
 	go vet ./...
 
 ## clean: Verwijder build-artefacten
 clean:
-	@echo "[clean] bin/ en svelte build-output verwijderen..."
+	@echo "[clean] bin/, public/ en client build-output verwijderen..."
 	rm -rf $(BIN_DIR)
-	rm -rf build          # SvelteKit standaard output-map
-	rm -rf .svelte-kit
+	rm -rf public
+	rm -rf $(CLIENT_DIR)/build $(CLIENT_DIR)/.svelte-kit
 
 ## help: Toon beschikbare targets
 help:
