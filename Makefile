@@ -34,6 +34,14 @@ else
 	endif
 endif
 
+# npm-commando: op Windows is npm een .cmd-wrapper. Die werkt ook onder de
+# bash die make gebruikt, terwijl het kale 'npm' (Unix-shimscript) daar faalt.
+ifeq ($(HOST_OS),windows)
+	NPM := npm.cmd
+else
+	NPM := npm
+endif
+
 # Binaire namen
 BIN_LINUX   := $(BIN_DIR)/$(APP_NAME)
 BIN_WINDOWS := $(BIN_DIR)/$(APP_NAME).exe
@@ -81,15 +89,15 @@ build-go-all: build-go-linux build-go-windows
 ## build-svelte: Bouw de SvelteKit client (static) naar ./public
 build-svelte:
 	@echo "[svelte] Bouwen (vite build → ./public)..."
-	cd $(CLIENT_DIR) && npm run build
+	cd $(CLIENT_DIR) && $(NPM) run build
 
 ## dev: Start Svelte dev-server én Go in watch-mode naast elkaar
 dev:
 	@echo "[dev] Svelte dev-server + Go air/run starten..."
 	@if command -v air > /dev/null 2>&1; then \
-		air -c .air.toml & (cd $(CLIENT_DIR) && npm run dev); \
+		air -c .air.toml & (cd $(CLIENT_DIR) && $(NPM) run dev); \
 	else \
-		go run $(CMD_PATH)/main.go & (cd $(CLIENT_DIR) && npm run dev); \
+		go run $(CMD_PATH)/main.go & (cd $(CLIENT_DIR) && $(NPM) run dev); \
 	fi
 
 ## fmt: Formateer Go broncode
@@ -100,7 +108,7 @@ fmt:
 ## check: Svelte-check + Go vet
 check:
 	@echo "[check] svelte-check..."
-	cd $(CLIENT_DIR) && npm run check
+	cd $(CLIENT_DIR) && $(NPM) run check
 	@echo "[check] go vet..."
 	go vet ./...
 
