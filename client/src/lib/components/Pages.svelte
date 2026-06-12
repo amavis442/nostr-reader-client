@@ -16,7 +16,7 @@
 	import { blockUser, followUser, unfollowUser } from '../state/user'
 	import { paginator } from '../state/paginator'
 	import { pageData, setApiUrl } from '../state/page'
-	import { publish } from '../state/note'
+	import { publish, getNewNotesCount } from '../state/note'
 	import { addBookmark, removeBookmark } from '../state/bookmark'
 	import type { Note, Profile, NostrEvent } from '../types'
 	import { addToast } from './partials/Toast/toast'
@@ -29,6 +29,24 @@
 	const context  = $derived<string | null>(data.context ?? null);
 
 	let textContent: string = $state('')
+
+	// Number of new notes waiting on the relay while the user is caught up.
+	let newNotesCount = $state(0)
+
+	// While there is no next page, poll the API for new notes so the pagination
+	// can show how many are waiting. Polling stops as soon as a next page exists.
+	$effect(() => {
+		if ($paginator.next_cursor !== 0) {
+			newNotesCount = 0
+			return
+		}
+		const checkNewNotes = async () => {
+			newNotesCount = await getNewNotesCount(context ?? '')
+		}
+		checkNewNotes()
+		const intervalId = setInterval(checkNewNotes, 60000)
+		return () => clearInterval(intervalId)
+	})
 
 	onMount(async () => {
 		setApiUrl(apiUrl)
@@ -148,9 +166,10 @@
 	</div>
 
 	<!-- Pagination + sync row -->
-	{#if $paginator.previous_cursor > 0 || $paginator.next_cursor > 0}
+	{#if $paginator.previous_cursor > 0 || $paginator.next_cursor > 0 || newNotesCount > 0}
 		<div class="flex items-center justify-between px-4 py-2 border-b border-divider">
 			<Pagination
+				{newNotesCount}
 				onchange={async (data) => {
 					refreshView({
 						cursor: data.cursor,
