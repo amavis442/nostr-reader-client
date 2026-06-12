@@ -17,7 +17,7 @@ export function setApiUrl(url: string) {
   apiUrl = url;
 }
 
-export async function refreshView(page: Page): Promise<void | number> {
+export async function refreshView(page: Page, scrollToTop = false): Promise<void | number> {
   let params = getSearchParams(page);
 
   return fetch(apiUrl + "?" + params, {
@@ -49,7 +49,10 @@ export async function refreshView(page: Page): Promise<void | number> {
       }
     })
     .then((resultCode) => {
-      if (resultCode == 1) {
+      // Only jump to the top on explicit page navigation (pagination). In-place
+      // refreshes (reply, sync, bookmark, follow) keep the current scroll position
+      // so the user stays on the note they were viewing.
+      if (resultCode == 1 && scrollToTop) {
         scrollContentToTop();
       }
 

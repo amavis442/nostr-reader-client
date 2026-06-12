@@ -160,7 +160,7 @@
 						since: $paginator.since,
 						renew: false,
 						context: context
-					}).then((resultCode) => {
+					}, true).then((resultCode) => {
 						if (resultCode == 3) {
 							addToast({ message: 'Request returned empty data set', type: 'error', dismissible: true, timeout: 3000 })
 						}
