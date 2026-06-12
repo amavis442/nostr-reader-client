@@ -7,11 +7,12 @@ import (
 func main() {
 	app := fiber.New()
 	app.Static("/", "./public")
-	//app.Get("/", mainPage)
+	// SPA-fallback: serveer index.html voor verzoeken die niet op een statisch
+	// bestand matchen, zodat client-side routes (bv. /relay) blijven werken bij
+	// een refresh of deep-link. Fiber's Static valt bij een niet-gevonden bestand
+	// door naar de volgende handler.
+	app.Use(func(c *fiber.Ctx) error {
+		return c.SendFile("./public/index.html")
+	})
 	app.Listen(":3030")
-}
-
-func mainPage(c *fiber.Ctx) error {
-	//This function will be see different soon
-	return c.Render("mainpage", nil)
 }
