@@ -169,8 +169,14 @@
 				hasPrev={$paginator.has_prev}
 				hasNext={$paginator.has_next}
 				onchange={async (data) => {
+					// For "next": use the highest event_created_at on the current page as cursor
+					// so the API returns notes newer than what is currently visible.
+					// For "prev": use the paginator cursor (minTS returned by the API).
+					const cursor = data.direction === 'next'
+						? Math.max(...$pageData.map(n => n.event.created_at))
+						: $paginator.cursor
 					refreshView({
-						cursor: data.cursor,
+						cursor,
 						direction: data.direction,
 						per_page: $paginator.per_page,
 						since: $paginator.since,
