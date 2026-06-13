@@ -1,7 +1,6 @@
 export type Page = {
   cursor: number;
-  next_cursor: number;
-  prev_cursor: number;
+  direction: 'next' | 'prev' | null;
   per_page: number;
   since: number;
   renew: boolean;
@@ -21,6 +20,8 @@ export interface Paginator {
   cursor: number;
   previous_cursor: number;
   next_cursor: number;
+  has_prev: boolean;
+  has_next: boolean;
   per_page: number;
   since: number;
   context: string;

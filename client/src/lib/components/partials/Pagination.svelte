@@ -1,45 +1,37 @@
 <script lang="ts">
-	// ABOUTME: Pagination navigation component driven by the paginator store.
-	// ABOUTME: Calls onchange callback with cursor data when previous or next is clicked.
-	import { paginator } from '../../state/paginator'
+	// ABOUTME: Pagination navigation component for cursor-based navigation.
+	// ABOUTME: Receives cursor values as props; calls onchange with cursor data when prev/next is clicked.
 
 	let {
 		onchange,
-		newNotesCount = 0
+		newNotesCount = 0,
+		cursor = 0,
+		hasPrev = false,
+		hasNext = false
 	}: {
-		onchange?: (data: { cursor: number, prev_cursor: number, next_cursor: number }) => void
+		onchange?: (data: { cursor: number, direction: 'next' | 'prev' }) => void
 		newNotesCount?: number
+		cursor?: number
+		hasPrev?: boolean
+		hasNext?: boolean
 	} = $props()
 
-	function changePage(direction: number) {
-		if (direction == 1) {
-			onchange?.({ cursor: $paginator.previous_cursor, prev_cursor: $paginator.previous_cursor, next_cursor: 0 })
-		}
-		if (direction == 2) {
-			onchange?.({ cursor: $paginator.next_cursor, next_cursor: $paginator.next_cursor, prev_cursor: 0 })
-		}
+	function changePage(direction: 'next' | 'prev') {
+		onchange?.({ cursor, direction })
 	}
 
 </script>
-{#if $paginator.previous_cursor > 0 || $paginator.next_cursor > 0 || newNotesCount > 0}
+
 	<nav class="pagination">
 		<ul>
-			<li
-				class={$paginator.previous_cursor == 0
-					? 'disabled'
-					: ''}
-			>
-				<a href={'#'} onclick={() => changePage(1)} aria-label="Previous" class="page-btn">
+			<li class={!hasPrev ? 'disabled' : ''}>
+				<a href={'#'} onclick={() => changePage('prev')} aria-label="Previous" class="page-btn">
 					<span aria-hidden="true">«</span>
 				</a>
 			</li>
 
-			<li
-				class={$paginator.next_cursor == 0
-					? 'disabled'
-					: ''}
-			>
-				<a href={'#'} onclick={() => changePage(2)} aria-label="Next" class="page-btn">
+			<li class={!hasNext && newNotesCount < 1 ? 'disabled' : ''}>
+				<a href={'#'} onclick={() => changePage('next')} aria-label="Next" class="page-btn">
 					<span aria-hidden="true">»</span>
 				</a>
 				{#if newNotesCount > 0}
@@ -48,7 +40,7 @@
 			</li>
 		</ul>
 	</nav>
-{/if}
+
 
 <style lang="postcss">
 	@reference "../../../app.css";

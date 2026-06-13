@@ -12,10 +12,9 @@
 	import { FaSolidArrowsRotate } from 'svelte-icons-pack/fa'
 	import { modals } from 'svelte-modals'
 	import EmojiModal from './partials/Emoji/EmojiModal.svelte'
-	import { refreshView, syncPage } from '../state/page'
+	import { pageData, setApiUrl,refreshView, syncPage } from '../state/page'
 	import { blockUser, followUser, unfollowUser } from '../state/user'
 	import { paginator } from '../state/paginator'
-	import { pageData, setApiUrl } from '../state/page'
 	import { publish, getNewNotesCount } from '../state/note'
 	import { addBookmark, removeBookmark } from '../state/bookmark'
 	import type { Note, Profile, NostrEvent } from '../types'
@@ -55,8 +54,7 @@
 
 		refreshView({
 			cursor: 0,
-			next_cursor: 0,
-			prev_cursor: 0,
+			direction: null,
 			per_page: $paginator.per_page,
 			since: $paginator.since,
 			renew: renewData,
@@ -74,8 +72,7 @@
 				if (response.status == 'ok') {
 					refreshView({
 						cursor: $paginator.cursor,
-						prev_cursor: 0,
-						next_cursor: 0,
+						direction: null,
 						per_page: $paginator.per_page,
 						since: 0,
 						renew: false,
@@ -93,8 +90,7 @@
 				if (response.status == 'ok') {
 					refreshView({
 						cursor: $paginator.cursor,
-						prev_cursor: 0,
-						next_cursor: 0,
+						direction: null,
 						per_page: $paginator.per_page,
 						since: 0,
 						renew: true,
@@ -166,15 +162,22 @@
 	</div>
 
 	<!-- Pagination + sync row -->
-	{#if $paginator.previous_cursor > 0 || $paginator.next_cursor > 0 || newNotesCount > 0}
 		<div class="flex items-center justify-between px-4 py-2 border-b border-divider">
 			<Pagination
 				{newNotesCount}
+				cursor={$paginator.cursor}
+				hasPrev={$paginator.has_prev}
+				hasNext={$paginator.has_next}
 				onchange={async (data) => {
+					// For "next": use the highest event_created_at on the current page as cursor
+					// so the API returns notes newer than what is currently visible.
+					// For "prev": use the paginator cursor (minTS returned by the API).
+					const cursor = data.direction === 'next'
+						? Math.max(...$pageData.map(n => n.event.created_at))
+						: $paginator.cursor
 					refreshView({
-						cursor: data.cursor,
-						next_cursor: data.next_cursor,
-						prev_cursor: data.prev_cursor,
+						cursor,
+						direction: data.direction,
 						per_page: $paginator.per_page,
 						since: $paginator.since,
 						renew: false,
@@ -201,7 +204,7 @@
 				<Icon src={FaSolidArrowsRotate} size="18" color="currentColor" />
 			</button>
 		</div>
-	{/if}
+
 
 	<!-- Notes list -->
 	<ul class="divide-y divide-divider">
