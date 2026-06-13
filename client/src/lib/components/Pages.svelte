@@ -12,10 +12,9 @@
 	import { FaSolidArrowsRotate } from 'svelte-icons-pack/fa'
 	import { modals } from 'svelte-modals'
 	import EmojiModal from './partials/Emoji/EmojiModal.svelte'
-	import { refreshView, syncPage } from '../state/page'
+	import { pageData, setApiUrl,refreshView, syncPage } from '../state/page'
 	import { blockUser, followUser, unfollowUser } from '../state/user'
 	import { paginator } from '../state/paginator'
-	import { pageData, setApiUrl } from '../state/page'
 	import { publish, getNewNotesCount } from '../state/note'
 	import { addBookmark, removeBookmark } from '../state/bookmark'
 	import type { Note, Profile, NostrEvent } from '../types'
@@ -170,6 +169,8 @@
 		<div class="flex items-center justify-between px-4 py-2 border-b border-divider">
 			<Pagination
 				{newNotesCount}
+				previousCursor={$paginator.previous_cursor}
+				nextCursor={$paginator.next_cursor}
 				onchange={async (data) => {
 					refreshView({
 						cursor: data.cursor,

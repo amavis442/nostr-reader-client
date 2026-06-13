@@ -1,31 +1,34 @@
 <script lang="ts">
-	// ABOUTME: Pagination navigation component driven by the paginator store.
-	// ABOUTME: Calls onchange callback with cursor data when previous or next is clicked.
-	import { paginator } from '../../state/paginator'
+	// ABOUTME: Pagination navigation component for cursor-based navigation.
+	// ABOUTME: Receives cursor values as props; calls onchange with cursor data when prev/next is clicked.
 
 	let {
 		onchange,
-		newNotesCount = 0
+		newNotesCount = 0,
+		previousCursor = 0,
+		nextCursor = 0
 	}: {
 		onchange?: (data: { cursor: number, prev_cursor: number, next_cursor: number }) => void
 		newNotesCount?: number
+		previousCursor?: number
+		nextCursor?: number
 	} = $props()
 
 	function changePage(direction: number) {
 		if (direction == 1) {
-			onchange?.({ cursor: $paginator.previous_cursor, prev_cursor: $paginator.previous_cursor, next_cursor: 0 })
+			onchange?.({ cursor: previousCursor, prev_cursor: previousCursor, next_cursor: 0 })
 		}
 		if (direction == 2) {
-			onchange?.({ cursor: $paginator.next_cursor, next_cursor: $paginator.next_cursor, prev_cursor: 0 })
+			onchange?.({ cursor: nextCursor, next_cursor: nextCursor, prev_cursor: 0 })
 		}
 	}
 
 </script>
-{#if $paginator.previous_cursor > 0 || $paginator.next_cursor > 0 || newNotesCount > 0}
+{#if previousCursor > 0 || nextCursor > 0 || newNotesCount > 0}
 	<nav class="pagination">
 		<ul>
 			<li
-				class={$paginator.previous_cursor == 0
+				class={previousCursor == 0
 					? 'disabled'
 					: ''}
 			>
@@ -35,7 +38,7 @@
 			</li>
 
 			<li
-				class={$paginator.next_cursor == 0
+				class={nextCursor == 0 && newNotesCount < 1
 					? 'disabled'
 					: ''}
 			>
