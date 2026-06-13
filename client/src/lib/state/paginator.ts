@@ -7,6 +7,8 @@ export const paginator = writable<Paginator>({
   cursor: 0,
   previous_cursor: 0,
   next_cursor: 0,
+  has_prev: false,
+  has_next: false,
   per_page: 30,
   since: 0,
   context: "",

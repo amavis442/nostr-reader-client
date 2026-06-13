@@ -5,11 +5,15 @@
 	let {
 		onchange,
 		newNotesCount = 0,
-		cursor = 0
+		cursor = 0,
+		hasPrev = false,
+		hasNext = false
 	}: {
 		onchange?: (data: { cursor: number, direction: 'next' | 'prev' }) => void
 		newNotesCount?: number
 		cursor?: number
+		hasPrev?: boolean
+		hasNext?: boolean
 	} = $props()
 
 	function changePage(direction: 'next' | 'prev') {
@@ -20,21 +24,13 @@
 
 	<nav class="pagination">
 		<ul>
-			<li
-				class={cursor == 0
-					? 'disabled'
-					: ''}
-			>
+			<li class={!hasPrev ? 'disabled' : ''}>
 				<a href={'#'} onclick={() => changePage('prev')} aria-label="Previous" class="page-btn">
 					<span aria-hidden="true">«</span>
 				</a>
 			</li>
 
-			<li
-				class={newNotesCount < 1
-					? 'disabled'
-					: ''}
-			>
+			<li class={!hasNext && newNotesCount < 1 ? 'disabled' : ''}>
 				<a href={'#'} onclick={() => changePage('next')} aria-label="Next" class="page-btn">
 					<span aria-hidden="true">»</span>
 				</a>

@@ -20,6 +20,8 @@ export interface Paginator {
   cursor: number;
   previous_cursor: number;
   next_cursor: number;
+  has_prev: boolean;
+  has_next: boolean;
   per_page: number;
   since: number;
   context: string;

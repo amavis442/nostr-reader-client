@@ -37,6 +37,8 @@ export async function refreshView(page: Page, scrollToTop = false): Promise<void
           cursor: paging.cursor,
           previous_cursor: paging.previous_cursor,
           next_cursor: paging.next_cursor,
+          has_prev: paging.has_prev ?? false,
+          has_next: paging.has_next ?? false,
           per_page: paging.per_page,
           since: paging.since,
           context: page.context ?? '',

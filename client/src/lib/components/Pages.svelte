@@ -166,6 +166,8 @@
 			<Pagination
 				{newNotesCount}
 				cursor={$paginator.cursor}
+				hasPrev={$paginator.has_prev}
+				hasNext={$paginator.has_next}
 				onchange={async (data) => {
 					refreshView({
 						cursor: data.cursor,
