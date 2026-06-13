@@ -35,7 +35,7 @@
 			</li>
 
 			<li
-				class={$paginator.next_cursor == 0
+				class={$paginator.next_cursor == 0 && newNotesCount < 1
 					? 'disabled'
 					: ''}
 			>
