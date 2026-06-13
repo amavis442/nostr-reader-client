@@ -9,11 +9,8 @@ export function getSearchParams(page: Page): string {
   if (!!page.context) {
     searchParams.append("context", page.context);
   }
-  if (!!page.next_cursor) {
-    searchParams.append("next_cursor", page.next_cursor.toString());
-  }
-  if (!!page.prev_cursor) {
-    searchParams.append("prev_cursor", page.prev_cursor.toString());
+  if (page.direction) {
+    searchParams.append("direction", page.direction);
   }
   if (!!page.per_page) {
     searchParams.append("per_page", page.per_page.toString());

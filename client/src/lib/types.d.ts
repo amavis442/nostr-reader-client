@@ -1,7 +1,6 @@
 export type Page = {
   cursor: number;
-  next_cursor: number;
-  prev_cursor: number;
+  direction: 'next' | 'prev' | null;
   per_page: number;
   since: number;
   renew: boolean;

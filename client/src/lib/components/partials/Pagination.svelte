@@ -8,18 +8,18 @@
 		previousCursor = 0,
 		nextCursor = 0
 	}: {
-		onchange?: (data: { cursor: number, prev_cursor: number, next_cursor: number }) => void
+		onchange?: (data: { cursor: number, direction: 'next' | 'prev' }) => void
 		newNotesCount?: number
 		previousCursor?: number
 		nextCursor?: number
 	} = $props()
 
-	function changePage(direction: number) {
-		if (direction == 1) {
-			onchange?.({ cursor: previousCursor, prev_cursor: previousCursor, next_cursor: 0 })
+	function changePage(direction: 'next' | 'prev') {
+		if (direction === 'prev') {
+			onchange?.({ cursor: previousCursor, direction: 'prev' })
 		}
-		if (direction == 2) {
-			onchange?.({ cursor: nextCursor, next_cursor: nextCursor, prev_cursor: 0 })
+		if (direction === 'next') {
+			onchange?.({ cursor: nextCursor, direction: 'next' })
 		}
 	}
 
@@ -32,7 +32,7 @@
 					? 'disabled'
 					: ''}
 			>
-				<a href={'#'} onclick={() => changePage(1)} aria-label="Previous" class="page-btn">
+				<a href={'#'} onclick={() => changePage('prev')} aria-label="Previous" class="page-btn">
 					<span aria-hidden="true">«</span>
 				</a>
 			</li>
@@ -42,7 +42,7 @@
 					? 'disabled'
 					: ''}
 			>
-				<a href={'#'} onclick={() => changePage(2)} aria-label="Next" class="page-btn">
+				<a href={'#'} onclick={() => changePage('next')} aria-label="Next" class="page-btn">
 					<span aria-hidden="true">»</span>
 				</a>
 				{#if newNotesCount > 0}

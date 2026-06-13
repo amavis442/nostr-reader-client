@@ -9,8 +9,7 @@ export async function getNewNotesCount(
   const paginatorData = get(paginator);
   const searchParams: Page = {
     cursor: paginatorData.cursor ?? 0,
-    prev_cursor: 0,
-    next_cursor: 0,
+    direction: null,
     per_page: paginatorData.per_page,
     since: paginatorData.since,
     renew: false,

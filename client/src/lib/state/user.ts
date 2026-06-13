@@ -17,8 +17,7 @@ export function blockUser(pubkey: string) {
       const paginatorData = get(paginator);
       refreshView({
         cursor: paginatorData.cursor,
-        prev_cursor: 0,
-        next_cursor: 0,
+        direction: null,
         per_page: paginatorData.per_page,
         since: paginatorData.since,
         renew: false,
@@ -46,8 +45,7 @@ export function followUser(pubkey: string) {
       const paginatorData = get(paginator);
       refreshView({
         cursor: paginatorData.cursor,
-        prev_cursor: 0,
-        next_cursor: 0,
+        direction: null,
         per_page: paginatorData.per_page,
         since: paginatorData.since,
         renew: false,
@@ -75,8 +73,7 @@ export function unfollowUser(pubkey: string) {
       const paginatorData = get(paginator);
       refreshView({
         cursor: paginatorData.cursor,
-        prev_cursor: 0,
-        next_cursor: 0,
+        direction: null,
         per_page: paginatorData.per_page,
         since: paginatorData.since,
         renew: false,

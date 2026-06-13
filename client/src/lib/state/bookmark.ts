@@ -19,8 +19,7 @@ export function addBookmark(eventID: string) {
       const paginatorData = get(paginator);
       const params: Page = {
         cursor: paginatorData.cursor,
-        prev_cursor: paginatorData.previous_cursor,
-        next_cursor: paginatorData.next_cursor,
+        direction: null,
         per_page: paginatorData.per_page,
         since: paginatorData.since,
         context: "follow",
@@ -50,8 +49,7 @@ export function removeBookmark(eventID: string) {
       const paginatorData = get(paginator);
       refreshView({
         cursor: paginatorData.cursor,
-        prev_cursor: paginatorData.previous_cursor,
-        next_cursor: paginatorData.next_cursor,
+        direction: null,
         per_page: paginatorData.per_page,
         since: paginatorData.since,
         context: "bookmark",

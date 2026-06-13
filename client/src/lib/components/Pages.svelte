@@ -54,8 +54,7 @@
 
 		refreshView({
 			cursor: 0,
-			next_cursor: 0,
-			prev_cursor: 0,
+			direction: null,
 			per_page: $paginator.per_page,
 			since: $paginator.since,
 			renew: renewData,
@@ -73,8 +72,7 @@
 				if (response.status == 'ok') {
 					refreshView({
 						cursor: $paginator.cursor,
-						prev_cursor: 0,
-						next_cursor: 0,
+						direction: null,
 						per_page: $paginator.per_page,
 						since: 0,
 						renew: false,
@@ -92,8 +90,7 @@
 				if (response.status == 'ok') {
 					refreshView({
 						cursor: $paginator.cursor,
-						prev_cursor: 0,
-						next_cursor: 0,
+						direction: null,
 						per_page: $paginator.per_page,
 						since: 0,
 						renew: true,
@@ -174,8 +171,7 @@
 				onchange={async (data) => {
 					refreshView({
 						cursor: data.cursor,
-						next_cursor: data.next_cursor,
-						prev_cursor: data.prev_cursor,
+						direction: data.direction,
 						per_page: $paginator.per_page,
 						since: $paginator.since,
 						renew: false,

@@ -74,8 +74,7 @@ export async function refresh() {
       const paginatorData = get(paginator);
       refreshView({
         cursor: paginatorData.cursor,
-        prev_cursor: paginatorData.previous_cursor,
-        next_cursor: paginatorData.next_cursor,
+        direction: null,
         per_page: paginatorData.per_page,
         since: paginatorData.since,
         renew: true,
@@ -96,8 +95,7 @@ export async function syncPage(): Promise<void | number> {
 
   return refreshView({
     cursor: paginatorData.cursor,
-    prev_cursor: 0,
-    next_cursor: 0,
+    direction: null,
     per_page: paginatorData.per_page,
     since: paginatorData.since,
     renew: false,
