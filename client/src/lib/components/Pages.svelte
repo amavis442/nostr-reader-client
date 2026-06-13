@@ -162,12 +162,10 @@
 	</div>
 
 	<!-- Pagination + sync row -->
-	{#if $paginator.previous_cursor > 0 || $paginator.next_cursor > 0 || newNotesCount > 0}
 		<div class="flex items-center justify-between px-4 py-2 border-b border-divider">
 			<Pagination
 				{newNotesCount}
-				previousCursor={$paginator.previous_cursor}
-				nextCursor={$paginator.next_cursor}
+				cursor={$paginator.cursor}
 				onchange={async (data) => {
 					refreshView({
 						cursor: data.cursor,
@@ -198,7 +196,7 @@
 				<Icon src={FaSolidArrowsRotate} size="18" color="currentColor" />
 			</button>
 		</div>
-	{/if}
+
 
 	<!-- Notes list -->
 	<ul class="divide-y divide-divider">

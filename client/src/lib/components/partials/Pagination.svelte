@@ -5,30 +5,23 @@
 	let {
 		onchange,
 		newNotesCount = 0,
-		previousCursor = 0,
-		nextCursor = 0
+		cursor = 0
 	}: {
 		onchange?: (data: { cursor: number, direction: 'next' | 'prev' }) => void
 		newNotesCount?: number
-		previousCursor?: number
-		nextCursor?: number
+		cursor?: number
 	} = $props()
 
 	function changePage(direction: 'next' | 'prev') {
-		if (direction === 'prev') {
-			onchange?.({ cursor: previousCursor, direction: 'prev' })
-		}
-		if (direction === 'next') {
-			onchange?.({ cursor: nextCursor, direction: 'next' })
-		}
+		onchange?.({ cursor, direction })
 	}
 
 </script>
-{#if previousCursor > 0 || nextCursor > 0 || newNotesCount > 0}
+
 	<nav class="pagination">
 		<ul>
 			<li
-				class={previousCursor == 0
+				class={cursor == 0
 					? 'disabled'
 					: ''}
 			>
@@ -38,7 +31,7 @@
 			</li>
 
 			<li
-				class={nextCursor == 0 && newNotesCount < 1
+				class={newNotesCount < 1
 					? 'disabled'
 					: ''}
 			>
@@ -51,7 +44,7 @@
 			</li>
 		</ul>
 	</nav>
-{/if}
+
 
 <style lang="postcss">
 	@reference "../../../app.css";
