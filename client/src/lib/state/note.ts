@@ -1,67 +1,32 @@
-import { get } from "svelte/store";
-import type { Note, Page } from "../types";
-import { paginator } from "./paginator";
-import { getSearchParams } from "./searchparams";
+import type { Note } from "../types";
 
 export async function getNewNotesCount(
   context: string | null,
 ): Promise<number> {
-  const paginatorData = get(paginator);
-  const searchParams: Page = {
-    cursor: paginatorData.cursor ?? 0,
-    direction: null,
-    per_page: paginatorData.per_page,
-    since: paginatorData.since,
-    renew: false,
-    context: context ?? "follow",
-  };
-  let params = getSearchParams(searchParams);
-
+  const params = new URLSearchParams({ context: context ?? "follow" });
   const data = await fetch(
-    `${import.meta.env.VITE_API_LINK}/api/getnewnotescount?` +
-      new URLSearchParams(params).toString(),
+    `${import.meta.env.VITE_API_LINK}/api/getnewnotescount?${params}`,
     {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     },
   )
-    .then((res) => {
-      return res.json();
-    })
-    .then((response) => {
-      console.log(response);
-      return response.data;
-    })
-    .catch((err) => {
-      console.error("error", err);
-    });
+    .then((res) => res.json())
+    .then((response) => response.data)
+    .catch((err) => { console.error("getNewNotesCount error", err); });
 
   return typeof data === "object" ? 0 : Number(data);
 }
 
-export async function getLastSeenId(): Promise<number> {
-  const data = await fetch(
-    `${import.meta.env.VITE_API_LINK}/api/getlastseenid`,
+export async function markCaughtUp(context: string): Promise<void> {
+  const params = new URLSearchParams({ context });
+  await fetch(
+    `${import.meta.env.VITE_API_LINK}/api/notes/caught-up?${params}`,
     {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
     },
-  )
-    .then((res) => {
-      return res.json();
-    })
-    .then((response) => {
-      return response.data;
-    })
-    .catch((err) => {
-      console.error("error", err);
-    });
-
-  return typeof data === "object" ? 0 : Number(data);
+  ).catch((err) => { console.error("markCaughtUp error", err); });
 }
 
 //Todo: needs same fix as sync note so only a portion of the view is updated and not the complete view.

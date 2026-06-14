@@ -15,7 +15,7 @@
 	import { pageData, setApiUrl,refreshView, syncPage } from '../state/page'
 	import { blockUser, followUser, unfollowUser } from '../state/user'
 	import { paginator } from '../state/paginator'
-	import { publish, getNewNotesCount } from '../state/note'
+	import { publish, getNewNotesCount, markCaughtUp } from '../state/note'
 	import { addBookmark, removeBookmark } from '../state/bookmark'
 	import type { Note, Profile, NostrEvent } from '../types'
 	import { addToast } from './partials/Toast/toast'
@@ -182,9 +182,14 @@
 						since: $paginator.since,
 						renew: false,
 						context: context
-					}, true).then((resultCode) => {
+					}, true).then(async (resultCode) => {
 						if (resultCode == 3) {
-							addToast({ message: 'Request returned empty data set', type: 'error', dismissible: true, timeout: 3000 })
+							if (data.direction === 'next') {
+								await markCaughtUp(context ?? 'follow')
+								addToast({ message: "You're all caught up", type: 'info', dismissible: true, timeout: 3000 })
+							} else {
+								addToast({ message: 'No more notes', type: 'info', dismissible: true, timeout: 3000 })
+							}
 						}
 					})
 				}}
