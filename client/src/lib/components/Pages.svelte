@@ -32,7 +32,7 @@
 	// Number of new notes waiting on the relay while the user is caught up.
 	let newNotesCount = $state(0)
 
-	onMount(async () => {
+	onMount(() => {
 		setApiUrl(apiUrl)
 		pageData.set([])
 		$paginator.context = context ?? ''
