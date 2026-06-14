@@ -32,21 +32,6 @@
 	// Number of new notes waiting on the relay while the user is caught up.
 	let newNotesCount = $state(0)
 
-	// While there is no next page, poll the API for new notes so the pagination
-	// can show how many are waiting. Polling stops as soon as a next page exists.
-	$effect(() => {
-		if ($paginator.next_cursor !== 0) {
-			newNotesCount = 0
-			return
-		}
-		const checkNewNotes = async () => {
-			newNotesCount = await getNewNotesCount(context ?? '')
-		}
-		checkNewNotes()
-		const intervalId = setInterval(checkNewNotes, 60000)
-		return () => clearInterval(intervalId)
-	})
-
 	onMount(async () => {
 		setApiUrl(apiUrl)
 		pageData.set([])
@@ -64,6 +49,13 @@
 				addToast({ message: 'Request returned empty data set', type: 'error', dismissible: true, timeout: 3000 })
 			}
 		})
+
+		const checkNewNotes = async () => {
+			newNotesCount = await getNewNotesCount(context ?? '')
+		}
+		checkNewNotes()
+		const intervalId = setInterval(checkNewNotes, 60000)
+		return () => clearInterval(intervalId)
 	})
 
 	async function replyToNote(params: { replyTo: Note; content: string }) {
